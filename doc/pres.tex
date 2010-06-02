@@ -29,17 +29,32 @@
 {
  \frametitle{Goal}
  \begin{block}{Goal}
-   Generating a depth map of the environment using stereo vision
+   Generating a despiriation depth map of the environment using stereo vision.
  \end{block}
 }
 
-\frame
-{
-  \frametitle{The Why}
-  \begin{itemize}
-    \item Normally: $\mathbb{R}^3 \rightarrow \mathbb{R}^2$
-    \item Now: $\mathbb{R}^3 \rightarrow \mathbb{R}^3$
-  \end{itemize}
+\frame{
+ \frametitle{Why it is interesting}
+   A depthmap can be used for various purposes:
+   \begin{itemize}
+    \item 3D modeling of a 2D enviroment
+    \item Tracking of objects
+    \item As information about the enviroment in path planning.
+   \end{itemize}
+}
+
+
+\section{Problems}
+
+\frame{
+ \frametitle{Theoretical problems}
+   Stereo vision in a real live enviroment can be split up in serveral subproblems:
+   \begin{itemize}
+    \item Camera callibration problems
+    \item Uncertain epipolair line
+    \item Occlusion
+    \item Matching object in both images
+   \end{itemize}
 }
 
 \section{Approach}
@@ -50,20 +65,33 @@
   \begin{itemize}
     \item Camera calibration
     \item Epipolar geometry
-    \item TOEDOE
+     \item Dense stereo algorithms
+      \begin{itemize}
+       \item Graph Cut
+       \item Believe Propagation
+       \item Region Based
+      \end{itemize}
+    \item Using the OpenCV library
+  \end{itemize}
+}
+
+\frame{
+  \frametitle{Separate Goals}
+  The goal can be seperated into two independant subgoals:
+
+  \begin{itemize}
+   \item \textbf{Calibration and Rectification} Starting with two camera's and building a rectified image
+   \item \textbf{Dense Stereo} Starting with a rectified image and bulding a dense despiration map \\ \textit{Can use an external dataset}
   \end{itemize}
 }
 
 \frame
 {
-  \frametitle{Difficulties}
+  \frametitle{Practical problems}
   \begin{itemize}
-    \item Practical problems
-    \begin{itemize}
-      \item Getting webcams to work
-      \item Learning OpenCV
-    \end{itemize}
-    \item Choosing algorithms for depthmap generating
+   \item Getting webcams to work
+   \item Learning OpenCV
+   \item Selecting and understanding the right dense stereo algorithm.
   \end{itemize}
 }
 
@@ -78,10 +106,8 @@
       \item Camera calibration
       \item Epipolar geometry
     \end{itemize}
-
     \item Sander and Sebastian
     \begin{itemize}
-      \item Implementing Graph Cut Algorithm
       \item Finding corresponding points
       \item Generating depth map
     \end{itemize}
@@ -92,11 +118,11 @@
 {
   \frametitle{Planning}
   \begin{itemize}
-
     \item Week 1
       \begin{itemize}
         \item Reading literature
         \item Getting webcams to work
+        \item Choosing working
       \end{itemize}
     \item Week 2 and 3
       \begin{itemize}
@@ -119,6 +145,4 @@
       \end{itemize}
   \end{itemize}
 }
-
-
 \end{document}
