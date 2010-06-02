@@ -29,7 +29,7 @@
 {
  \frametitle{Goal}
  \begin{block}{Goal}
-   Generating a despiriation depth map of the environment using stereo vision.
+   Generating a disparity depth map of the environment using stereo vision.
  \end{block}
 }
 
@@ -40,7 +40,7 @@
     \item 3D modeling of a 2D enviroment
     \item Tracking of objects
     \item Recognising front objects
-    \item As information about the enviroment in path planning.
+    \item As information about the environment in path planning
    \end{itemize}
 }
 
@@ -49,12 +49,12 @@
 
 \frame{
  \frametitle{Theoretical problems}
-   Stereo vision in a real live enviroment can be split up in serveral subproblems:
+   Stereo vision in a real life environment can be split up in several subproblems:
    \begin{itemize}
-    \item Camera callibration problems
-    \item Uncertain epipolair line
+    \item Camera calibration problems
+    \item Generating epipolar line
     \item Occlusion
-    \item Matching object in both images
+    \item Matching points in both images
    \end{itemize}
 }
 
@@ -77,12 +77,12 @@
 }
 
 \frame{
-  \frametitle{Separate Goals}
-  The goal can be seperated into two independant subgoals:
+  \frametitle{Separate goals}
+  The goal can be seperated into two independent subgoals:
 
   \begin{itemize}
-   \item \textbf{Calibration and Rectification} Starting with two camera's and building a rectified image
-   \item \textbf{Dense Stereo} Starting with a rectified image and bulding a dense despiration map \\ \textit{Can use an external dataset}
+   \item \textbf{Calibration and rectification} Starting with two cameras and building a rectified image
+   \item \textbf{Dense stereo} Starting with a rectified image and building a dense disparity map \\ \textit{Can use an external dataset}
   \end{itemize}
 }
 
@@ -92,7 +92,7 @@
   \begin{itemize}
    \item Getting webcams to work
    \item Learning OpenCV
-   \item Selecting and understanding the right dense stereo algorithm.
+   \item Selecting and understanding the right dense stereo algorithm
   \end{itemize}
 }
 
@@ -141,7 +141,7 @@
         \item If there's enough time left
           \begin{itemize}
             \item Generate 3D image of environment
-            \item Removing background using dense disparity map
+            \item Remove background using dense disparity map
           \end{itemize}
       \end{itemize}
   \end{itemize}
