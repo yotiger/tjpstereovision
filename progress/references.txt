@@ -1,0 +1,32 @@
+Links to some interesting books, articles and files
+===================================================
+
+-------------[ OpenCV and coding ]------------------------
+
++ [book] Learning OpenCV
+         on usbstick
+
++ [refr] OpenCV Python bindings
+         http://opencv.willowgarage.com/documentation/python/index.html
+
++ [code] Bouguet toolbox => camera calibration
+         http://www.vision.caltech.edu/bouguetj/calib_doc/
+
+
+-------------[ Computer Vision ]--------------------------
+
++ [book] Multiple View Geometry - Hartley and Zisserman
+         on usbstick
+
++ [site] Middlebury Stereo => datasets
+         http://vision.middlebury.edu/stereo/
+
++ [book] CV Algoritms and Applications - Szeliski => rectificatie
+         http://szeliski.org/Book/drafts/SzeliskiBook_20100517_draft.pdf
+
++ [ppts] Slides Zisserman
+         http://www.ics.uci.edu/~dramanan/teaching/cs116_fall08/lec/
+
++ [site] Criminisi
+         http://research.microsoft.com/en-us/people/antcrim/
+
