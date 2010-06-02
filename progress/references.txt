@@ -29,4 +29,3 @@ Links to some interesting books, articles and files
 
 + [site] Criminisi
          http://research.microsoft.com/en-us/people/antcrim/
-
