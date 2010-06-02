@@ -1,0 +1,106 @@
+\documentclass{beamer}
+
+%\colorlet{structure}{red!65!black}
+%
+%\beamertemplateshadingbackground{blue!40}{white}
+%
+\usepackage{beamerthemesplit}
+%\usepackage{hyperref}
+\usetheme{Berkeley}
+\useinnertheme{circles}
+\usecolortheme{seagull}
+
+\title[Stereo vision]{Stereo Vision using the OpenCV library}
+\author[Dr\"oppelmann \and Hueting \and Latour \and \\Van der Veen]{Sebastian Dr\"oppelmann \\ Moos Hueting \\ Sander Latour \\ Martijn van der Veen}
+\institute{University of Amsterdam}
+\date{June 2010}
+\subject{Computer vision}
+
+\begin{document}
+
+\frame
+{
+  \titlepage
+}
+
+\section{Preface}
+
+\frame
+{
+ \frametitle{Goal}
+ \begin{block}{Goal}
+   Generating a depth map of the environment using stereo vision
+ \end{block}
+}
+
+\frame
+{
+  \frametitle{The Why}
+  \begin{itemize}
+    \item Normally: $\mathbb{R}^3 \rightarrow \mathbb{R}^2$
+    \item Now: $\mathbb{R}^3 \rightarrow \mathbb{R}^3$
+  \end{itemize}
+}
+
+\section{Approach}
+
+\frame
+{
+  \frametitle{Approach}
+  \begin{itemize}
+    \item Camera calibration
+    \item Epipolar geometry
+    \item TOEDOE
+  \end{itemize}
+}
+
+\frame
+{
+  \frametitle{Difficulties}
+  \begin{itemize}
+    \item Practical problems
+    \begin{itemize}
+      \item Getting webcams to work
+      \item Learning OpenCV
+    \end{itemize}
+    \item Choosing algorithms for depthmap generating
+  \end{itemize}
+}
+
+\section{Planning}
+
+\frame
+{
+  \frametitle{Tasks}
+  \begin{itemize}
+    \item Martijn and Moos
+    \begin{itemize}
+      \item Camera calibration
+      \item Epipolar geometry
+    \end{itemize}
+    \item Sander and Sebastian
+    \begin{itemize}
+      \item Finding corresponding points
+      \item Generating depth map
+    \end{itemize}
+  \end{itemize}
+}
+
+\frame
+{
+  \frametitle{Planning}
+  \begin{itemize}
+    \item Week 1
+      \begin{itemize}
+        \item Reading literature
+        \item Getting webcams to work
+        \item TOEDOE
+      \end{itemize}
+    \item Week 2
+      \begin{itemize}
+        \item Proggen
+      \end{itemize}
+  \end{itemize}
+}
+
+\end{document}
