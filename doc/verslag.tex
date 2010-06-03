@@ -16,7 +16,15 @@
   \titlepage
 
 \section{Preface}
-Stereo vision is one of the key subjects in the computer vision research. Stereo vision can be best described as taking two viewpoints in a 3D world, comparing the distance between the position of an object in both images and relating that to the distance of an object to the camera. Such information is retreived by a dense stereo algorithm of which the output is often a disparity depth map. A disparity depth map is a 2D image where the color of each pixel is directly linked to the distance of the pixel on that coordinate in the original image, in order words if an object is white it is depending on the implementation nearer or further away than a darker object. Our goal is to generate such a depth map from two images taken with two webcams.
+Stereo vision is one of the key subjects in the computer vision research. Stereo vision can be best described as taking two viewpoints in a 3D world, comparing the distance between the position of an object in both images and relating that to the distance of an object to the camera. Such information is retreived by a dense stereo algorithm of which the output is often a disparity depth map. A disparity depth map is a 2D image where the color of each pixel is directly linked to the distance of the pixel on that coordinate in the original image, in order words if an object is white it is depending on the implementation nearer or further away than a darker object. Our goal is to generate such a depth map from two images taken with two webcams.\\\\
+
+Depthmaps are interesting because they can be used for various purposes: 
+\begin{description}
+ \item[3D modeling of 2D images] When you take two 2D images of a 3D enviroment and calculate the depthmap, you can create a 3D model of the scene by using the depth as the third dimension.
+ \item[Tracking of objects] When you have a depthmap it is easier to track an object because you have additional segmentation possibilities. You can create segments of pixels that are near based on the depth of the pixels and their adjacency.
+ \item[Recognising front objects] When you apply segmentation based on the depthmap, you can distinguish objects that are situated in the front of the scene.
+ \item[As information about the environment in path planning] A depthmap supplies additional information for path planning.
+\end{description}
 
 \section{OpenCV}
 OpenCV is a library of programming functions for real time computer vision. By using this library we can constrain our tasks to integrating various parts of OpenCV and expanding it where possible. If we would not use OpenCV, we would not have enough time to achieve our goal. OpenCV is a C library but has python binding which we will use to decrease the risk of programming errors.
@@ -28,12 +36,7 @@ OpenCV is a library of programming functions for real time computer vision. By u
 
  \frametitle{Why it is interesting}
    A depthmap can be used for various purposes:
-   \begin{itemize}
-    \item 3D modeling of a 2D enviroment
-    \item Tracking of objects
-    \item Recognising front objects
-    \item As information about the environment in path planning
-   \end{itemize}
+
 
 
 \section{Problems}
