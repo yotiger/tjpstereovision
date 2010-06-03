@@ -1,22 +1,25 @@
-
+\documentclass{article}
+\usepackage[noheadfoot]{geometry}
 %\colorlet{structure}{red!65!black}
 %
 %\beamertemplateshadingbackground{blue!40}{white}
 %
 %\usepackage{hyperref}
 
+
+\begin{document}
 \title[Stereo vision]{Stereo Vision using the OpenCV library}
 \author[Dr\"oppelmann \and Hueting \and Latour \and \\Van der Veen]{Sebastian Dr\"oppelmann \\ Moos Hueting \\ Sander Latour \\ Martijn van der Veen}
 \institute{University of Amsterdam}
 \date{June 2010}
-\subject{Computer vision}
-
-\begin{document}
 
   \titlepage
 
 \section{Preface}
+Stereo vision is one of the key subjects in the computer vision research. Stereo vision can be best described as taking two viewpoints in a 3D world, comparing the distance between the position of an object in both images and relating that to the distance of an object to the camera. Such information is retreived by a dense stereo algorithm of which the output is often a disparity depth map. A disparity depth map is a 2D image where the color of each pixel is directly linked to the distance of the pixel on that coordinate in the original image, in order words if an object is white it is depending on the implementation nearer or further away than a darker object. Our goal is to generate such a depth map from two images taken with two webcams.
 
+\section{OpenCV}
+OpenCV is a library of programming functions for real time computer vision. By using this library we can constrain our tasks to integrating various parts of OpenCV and expanding it where possible. If we would not use OpenCV, we would not have enough time to achieve our goal. OpenCV is a C library but has python binding which we will use to decrease the risk of programming errors.
 
  \frametitle{Goal}
  \begin{block}{Goal}
