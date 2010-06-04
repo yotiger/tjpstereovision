@@ -8,6 +8,8 @@
 
 \begin{document}
 
+\graphicspath{{./images/}}
+
 \begin{titlepage}
   \maketitle
 \end{titlepage}
@@ -91,6 +93,80 @@ The corresponding points necessary for generating the fundamental matrix is
 obtained by making multiple pictures of a chessboard in the environment. The
 OpenCV toolkit has a builtin function to recognize the corners of a chessboard.
 In this project we will not elaborate on that subject.
+
+\subsection{Dense stereo}
+Dense stereo combines the two images you get from the rectification
+and calculates the position of the pixels in the left image and
+outputs where the pixel is located in the right image. With this method we
+calculate the pixel's distance from the camera. 
+The depth is then translated to a depth map where points closer
+to the camera are almost white whereas points further away are almost
+black. Points in between are shown in grayscale, which get darker
+ the further away the point gets from the camera.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{depthmap}
+\includegraphics[width=0.3\textwidth]{depthmap_original}
+\caption{A depthmap with the corresponding picture}
+\end{figure}
+
+To achieve this you have a whole list of algorithms that do
+the trick.\footnote{A good overview can be found at
+http://vision.middlebury.edu/stereo/eval/}
+
+Most of these algorithms are based on 4 principles: 
+
+\begin{itemize}
+\item Graph Cut
+\item Believe Propagation
+\item Region Based
+\item Dynamic Programming
+\end{itemize}
+
+These algorithms have to deal with the following problems in their
+calculations:
+
+\begin{itemize}
+    \item Matching points in both images
+    \item Occlusion
+\end{itemize}
+
+\subsubsection{Matching}
+The main goal of such an algorithm is of matching one
+point in one image to the corresponding point in the other image. During the
+matching there are several tasks that the algorithm has to perform. At
+first it has to compare the epipolar lines of the images pixel by
+pixel. For every pixel on one line you have to find the counterpart on
+the corresponding epipolar line in the other image. Often the pixels aren't
+in the same order, for example if
+there is a lamp pole in front of a house, things that lie on
+the left side of the lamp pole in the left picture could sit on the right
+side in the right picture.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{matching_problems_direction}  
+\caption{On the left image the window is completely on the left of the pole,
+whereas in the right image, the window is completely on the right}
+\end{figure}
+
+Another problem is occlusion of the pixels. Some things that are
+visible in one picture can be hidden behind objects in the other
+picture. This has to be caught and handled.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{matching_problems_occlusion}
+\caption{Two examples of occlusion problems when working with stereo vision}
+\end{figure}
+
+Because the OpenCV library that we have chosen has the basic
+implementation of a graph cut algorithm from Kolmogorov, we will start with
+that specific algorithm.
+It is a bit slow and not the best algorithm to handle occlusion but because it is
+easy to use we will at first use this algorithm and later replace it
+with a better working one.
 
 \newpage
 \section{Planning}
