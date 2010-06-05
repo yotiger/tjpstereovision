@@ -22,4 +22,4 @@ if __name__ == '__main__':
 
     disparity_left_visual = cv.CreateMat(l.rows, l.cols, cv.CV_8U)
     cv.ConvertScale(disparity_left, disparity_left_visual, -16)
-    cv.SaveImage("disparity.pgm", disparity_left_visual)
+    cv.SaveImage("disparity.jpg", disparity_left_visual)
