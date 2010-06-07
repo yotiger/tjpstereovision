@@ -1,0 +1,3 @@
+SQSIZE = 25
+COLS = 10
+ROWS = 7
