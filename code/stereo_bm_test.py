@@ -9,7 +9,7 @@ def findstereocorrespondence(image_left, image_right):
     (r, c) = (image_left.rows, image_left.cols)
     disparity = cv.CreateMat(r, c, cv.CV_16S)
     state = cv.CreateStereoBMState(cv.CV_STEREO_BM_BASIC)
-    cv.FindStereoCorrespondenceGC(image_left, image_right, disparity, state)
+    cv.FindStereoCorrespondenceBM(image_left, image_right, disparity, state)
     return disparity
 
 
