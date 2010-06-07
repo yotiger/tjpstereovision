@@ -9,7 +9,9 @@ def findstereocorrespondence(image_left, image_right):
     (r, c) = (image_left.rows, image_left.cols)
     disparity_left = cv.CreateMat(r, c, cv.CV_16S)
     disparity_right = cv.CreateMat(r, c, cv.CV_16S)
-    state = cv.CreateStereoGCState(16, 10)
+    #state = cv.CreateStereoGCState(20, 8)
+    state = cv.CreateStereoGCState(20,8)
+    state.minDisparity = -10
     cv.FindStereoCorrespondenceGC(image_left, image_right, disparity_left, disparity_right, state, 0)
     return (disparity_left, disparity_right)
 
