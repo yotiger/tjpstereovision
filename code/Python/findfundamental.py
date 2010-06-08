@@ -4,8 +4,8 @@ from camconstants import *
 
 def findFund(cam1, cam2, window):
 
-  foundpoints1 = cv.CreateMat(COLS * ROWS, 2, cv.CV_32FC1)
-  foundpoints2 = cv.CreateMat(COLS * ROWS, 2, cv.CV_32FC1)
+  foundpoints1 = cv.CreateMat(1, COLS * ROWS, cv.CV_32FC2)
+  foundpoints2 = cv.CreateMat(1, COLS * ROWS, cv.CV_32FC2)
 
   while 1:
     f1 = cv.QueryFrame(cam1)
@@ -24,10 +24,8 @@ def findFund(cam1, cam2, window):
         continue
 
       for i in range(0, len(cor1)):
-        cv.Set2D(foundpoints1, i, 0, cor1[1][i][0])
-        cv.Set2D(foundpoints1, i, 1, cor1[1][i][1])
-        cv.Set2D(foundpoints2, i, 0, cor2[1][i][0])
-        cv.Set2D(foundpoints2, i, 1, cor2[1][i][1])
+        cv.Set2D(foundpoints1, 0, i, (cor1[1][i][0], cor1[1][i][1]))
+        cv.Set2D(foundpoints2, 0, i, (cor2[1][i][0], cor2[1][i][1]))
 
       print "Found chessboard."
       break
