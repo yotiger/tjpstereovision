@@ -33,16 +33,11 @@ int main(int argc, char** argv){
 	cout << "DISP: \n\n" << "rows: " << disp.rows << "\ncols: " << disp.cols << "\ndepth: " << disp.depth() << "\nchannels: " << disp.channels() << "\n\n";
 	StereoSGBM sgbm(0,16,5);
 	sgbm(m1,m2,disp);
-	disp = disp / 16;
+	//disp = disp / 16;
 	for( int i = 0; i < 100; i++){
 		for ( int j = 0; j < 100; j++){
 	//		cout << "DISP[" << i << "][" << j <<"]" << disp.at<long int>(i,j) << "\n";
 		}
 	}
-	IplImage im(disp);
-    	cvNamedWindow("disp", CV_WINDOW_AUTOSIZE);
-	cvShowImage("disp", im);
-	cvWaitKey(0);
-	cvReleaseImage( &im );
-	cvDestroyWindow("disp");
+	imwrite("sgbm.jpg",disp);
 }
