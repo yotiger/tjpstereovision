@@ -1,1 +1,10 @@
-*read documents
+----[ Team Rectify ]----
+
+[x] getting opencv to work
+[x] getting cams to work
+[ ] getting rectify to work
+   [x] finding chessboard points
+   [ ] calibrating: finding cam matrices
+   [ ] rectifying images
+[ ] making smooth demo interface
+
