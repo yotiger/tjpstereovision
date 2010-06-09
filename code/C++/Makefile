@@ -1,5 +1,32 @@
-chesstest: chessboard_test.cpp
-	g++ -o chessboard_test chessboard_test.cpp -I /home/moos/prog/opencv/OpenCV-2.1.0/include/opencv/ -L /home/moos/prog/opencv/OpenCV-2.1.0/lib/ -lcxcore -lcv -lhighgui
+### Makefile --- 
 
-sgbm: sgbm.cpp
-	g++ -o sgbm sgbm.cpp -I/usr/opencv/OpenCV-2.1.0/include/ -L/usr/opencv/OpenCV-2.1.0/release/lib/ -lm -lcxcore -lcv -lcvaux -lhighgui -lml
+## Author: xtroce@BhfMission.spuerwerk.net
+## Version: $Id: Makefile,v 0.0 2010/06/08 15:05:25 xtroce Exp $
+## Keywords: 
+## X-URL: 
+
+   TARGET1  := chesstest
+   TARGET2  := sgbm
+    SRCS1   := chessboard_test.cpp 
+    SRCS2   := sgbm.cpp
+
+    CCFLAGS = -O2 -Wall -ggdb 
+
+    OPENCVFLAGS = `pkg-config --libs --cflags opencv`
+
+
+    .PHONY: all clean distclean 
+    all:: ${TARGET1} ${TARGET2} 
+
+
+    ${TARGET1}:  
+	g++ ${CCFLAGS} ${OPENCVFLAGS} ${SRCS1} -o ${TARGET1}
+    ${TARGET2}:  
+	g++ ${CCFLAGS} ${OPENCVFLAGS} ${SRCS2} -o ${TARGET2}
+
+    clean:: 
+	-rm -f *~ *.o ${TARGET1} ${TARGET2} 
+
+    distclean:: clean
+
+### Makefile ends here
