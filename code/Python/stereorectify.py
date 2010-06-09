@@ -30,5 +30,19 @@ def saveRectif(rect, dir="rect"):
   cv.Save("{0}/{1}".format(dir, filenames[4]), Q)
   print "Rectification parameters written to directory '{0}'.".format(dir)
 
+def loadRectif(dir="rect"):
+  filenames = ("R1.txt", "R2.txt", "P1.txt", "P2.txt", "Q.txt")
+  for fn in ["{0}/{1}".format(dir, f) for f in filenames]:
+    if not os.path.exists(fn):
+      print "Error: File {0} doesn't exists. Exiting.".format(fn)
+      sys.exit(1)
+  R1 = cv.Load("{0}/{1}".format(dir, filenames[0]))
+  R2 = cv.Load("{0}/{1}".format(dir, filenames[1]))
+  P1 = cv.Load("{0}/{1}".format(dir, filenames[2]))
+  P2 = cv.Load("{0}/{1}".format(dir, filenames[3]))
+  Q = cv.Load("{0}/{1}".format(dir, filenames[4]))
+  print "Rectification parameters loaded from dir '{0}'.".format(dir)
+  return (R1, R2, P1, P2, Q)
+
 if __name__ == "__main__":
   saveRectif(stereoRectify())
