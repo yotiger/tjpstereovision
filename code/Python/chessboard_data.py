@@ -3,8 +3,8 @@ from camfunctions import *
 from camconstants import *
 
 def getChessboards(n, fname="chessboards.txt"):
-  p1 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_32FC2)
-  p2 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_32FC2)
+  p1 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_64FC2)
+  p2 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_64FC2)
 
   f = open(fname, 'r')
   lr = 0
