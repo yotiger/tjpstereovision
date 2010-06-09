@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <opencv/highgui.h>
+#include <cv.h>
+#include <highgui.h>
 
 /* left and right seen from the computers eyes */
 #define CAM_LEFT  1
