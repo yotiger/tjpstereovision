@@ -9,11 +9,22 @@ def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.png", 
 
   dst1 = cv.CloneMat(im1)
   dst2 = cv.CloneMat(im2)
+  print cv.GetSize(dst1)
+
+  map1x = cv.CreateMat(480, 640, cv.CV_32FC1)
+  map2x = cv.CreateMat(480, 640, cv.CV_32FC1)
+  map1y = cv.CreateMat(480, 640, cv.CV_32FC1)
+  map2y = cv.CreateMat(480, 640, cv.CV_32FC1)
 
   print "Rectifying images..."
+
+  cv.InitUndistortRectifyMap(CM1, D1, R1, P1, map1x, map1y)
+  cv.InitUndistortRectifyMap(CM2, D2, R2, P2, map2x, map2y)
+
+  cv.Remap(im1, dst1, map1x, map1y)
+  cv.Remap(im2, dst2, map2x, map2y)
+
   # CONTINUE WORK HERE
-  cv.Undistort2(im1, dst1, CM1, D1, P1)
-  cv.Undistort2(im2, dst2, CM2, D2, P2)
   print "Done."
   cv.SaveImage(f1, dst1)
   cv.SaveImage(f2, dst2)
@@ -21,6 +32,6 @@ def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.png", 
 
 if __name__ == "__main__":
   # HARDCODED DEBUG STATEMENTS
-  im1 = cv.LoadImageM("im1.ppm"))
-  im2 = cv.LoadImageM("im2.ppm")
+  im1 = cv.LoadImageM("im1.png")
+  im2 = cv.LoadImageM("im2.png")
   rectifyImages(im1, im2)
