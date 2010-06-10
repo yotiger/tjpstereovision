@@ -1,6 +1,10 @@
+#!/usr/bin/python
 import os.path
 from optparse import OptionParser
 
+import cv
+from camfunctions import *
+from camconstants import *
 from stereoheader import *
 from chessboard_data import *
 
