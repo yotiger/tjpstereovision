@@ -77,8 +77,8 @@
       \item slow
       \item not very precise
       \end{itemize}
-      \importimage{mid_depth_given}
-      \importimage{gc_mid_depth_own}
+      \importimage{disp_tsukuba_orig}
+      \importimage{gc_tsukuba_own}
 }
 
 
@@ -88,8 +88,8 @@
       \item faster
       \item interpretation missing
     \end{itemize}
-    \importimage{mid_depth_given}
-    \importimage{bm_mid_depth_own}
+    \importimage{disp_tsukuba_orig}
+    \importimage{bm_tsukuba_own}
 }
 
 \frame{
@@ -100,60 +100,13 @@
       \item good depthmap
       \item much noise (needs tuning)
     \end{itemize}
-    \importimage{mid_depth_given}
-    \importimage{sgbm_mid_depth_own}
+    \importimage{disp_tsukuba_orig}
+    \importimage{sgbm_tsukuba_own}
 }
 
-
-\section{Problems}
-\frame{
- \frametitle{Theoretical problems}
-   Stereo vision in a real life environment can be split up in several subproblems:
-   \begin{itemize}
-    \item Camera calibration problems
-    \item Generating epipolar line
-    \item Matching points in both images
-    \item Occlusion
-   \end{itemize}
-}
 
 
 \section{Planning}
-
-\frame
-{
-  \frametitle{Fullfilled Tasks}
-  \begin{itemize}
-    \item Martijn and Moos
-    \begin{itemize}
-      \item Camera calibration
-      \item Epipolar geometry
-    \end{itemize}
-    \item Sander and Sebastian
-    \begin{itemize}
-      \item Finding corresponding points
-      \item Generating depth map
-    \end{itemize}
-  \end{itemize}
-}
-
-\frame {
-  \frametitle{new planning - week 3}
-  \begin{itemize}
-    \item Martijn en Moos
-    \begin{itemize}
-      \item Fine tuning calibration
-      \item cropping of rectified images
-    \end{itemize}
-    \item Sebastian en Sander
-    \begin{itemize}
-      \item Fine tuning parameters
-      \item Completely understand the algorithms
-      \item depth map normalize
-    \end{itemize}
-}
-
-
 \frame
 {
   \frametitle{Planning}
@@ -185,4 +138,21 @@
       \end{itemize}
   \end{itemize}
 }
+
+\frame {
+  \frametitle{new planning - week 3}
+  \begin{itemize}
+    \item Martijn en Moos
+    \begin{itemize}
+      \item Fine tuning calibration
+      \item cropping of rectified images
+    \end{itemize}
+    \item Sebastian en Sander
+    \begin{itemize}
+      \item Fine tuning parameters
+      \item Completely understand the algorithms
+      \item depth map normalize
+    \end{itemize}
+}
+
 \end{document}
