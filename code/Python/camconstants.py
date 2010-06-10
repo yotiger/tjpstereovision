@@ -1,0 +1,4 @@
+SQSIZE = 25
+COLS = 10
+ROWS = 7
+IMSIZE = (640, 480)
