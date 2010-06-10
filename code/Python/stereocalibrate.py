@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import cv
 from camfunctions import *
 from camconstants import *
