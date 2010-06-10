@@ -35,8 +35,8 @@ def menu():
       continue
 
     if choice == "5":
-      im1 = cv.LoadImageM("im1.png")
-      im2 = cv.LoadImageM("im2.png")
+      im1 = cv.LoadImageM("im1.bmp")
+      im2 = cv.LoadImageM("im2.bmp")
       rectifyImages(im1, im2)
       continue
 

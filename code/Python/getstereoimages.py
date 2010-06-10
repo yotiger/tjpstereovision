@@ -16,8 +16,8 @@ def getStereoImages():
 
     if k == 0x20:
       print "Image pair saved."
-      cv.SaveImage("im1.png", frame1)
-      cv.SaveImage("im2.png", frame2)
+      cv.SaveImage("im1.bmp", frame1)
+      cv.SaveImage("im2.bmp", frame2)
     
     if k == 0x1b:
       print "ESC pressed. Exiting..."
