@@ -1,10 +1,8 @@
-import cv
-from camfunctions import *
-from camconstants import *
+from stereoheader import *
 
 def getChessboards(n, fname="chessboards.txt"):
-  p1 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_32FC2)
-  p2 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_32FC2)
+  p1 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_64FC2)
+  p2 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_64FC2)
 
   f = open(fname, 'r')
   lr = 0
@@ -59,4 +57,3 @@ def writeChessboards(cap1, cap2, n1, n2, n=8, fname="chessboards.txt"):
 if __name__ == "__main__":
   (c1, c2) = genCamWindows("Camera 1", "Camera 2")
   writeChessboards(c1, c2, "Camera 1", "Camera 2")
-  getChessboards(8)

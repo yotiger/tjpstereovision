@@ -1,0 +1,5 @@
+code/Python/calib
+code/Python/rect
+.*\.png
+.*\.pyc
+doc/.*\.(?!(?:tex|TEX|txt|TXT))
