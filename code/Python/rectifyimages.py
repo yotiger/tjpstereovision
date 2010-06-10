@@ -3,7 +3,7 @@ from camfunctions import *
 from camconstants import *
 from stereorectify import *
 
-def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.png", f2="im2rect.png"):
+def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", f2="im2rect.bmp"):
   (CM1, CM2, D1, D2, R, T, E, F) = loadCalibration(calibdir)
   (R1, R2, P1, P2, Q) = loadRectif(rectdir)
 
@@ -32,6 +32,6 @@ def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.png", 
 
 if __name__ == "__main__":
   # HARDCODED DEBUG STATEMENTS
-  im1 = cv.LoadImageM("im1.png")
-  im2 = cv.LoadImageM("im2.png")
+  im1 = cv.LoadImageM("im1.bmp")
+  im2 = cv.LoadImageM("im2.bmp")
   rectifyImages(im1, im2)
