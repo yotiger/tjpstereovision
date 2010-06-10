@@ -87,43 +87,97 @@
   \end{figure}
 }
 
+\section{Depth Map Algorithms}
 
-\section{Planning}
 
 \frame
 {
-  \frametitle{Tasks}
+  \frametitle{Depth Map Algorithms}
+  
+  Tested with standard  OpenCV algorithms\\
+  Used datasets from Middlebury\\
+
   \begin{itemize}
-    \item Martijn and Moos
-    \begin{itemize}
-      \item Camera calibration
-      \item Epipolar geometry
-    \end{itemize}
-    \item Sander and Sebastian
-    \begin{itemize}
-      \item Finding corresponding points
-      \item Generating depth map
-    \end{itemize}
+    \item Graph Cut
+    \item Block Matching
+    \item Semi Global Block Matching
+  \end{itemize}
+  
+}
+
+\frame {
+  \frametitle{New Problems}
+  \begin{itemize}
+    \item parameters of algorithms
+    \item understand and choose right occlusion handling
+    \item implementation very bad with twisted cameras
   \end{itemize}
 }
 
+\frame {
+  \frametitle{Graph Cut}
+      \begin{itemize}
+      \item popular
+      \item slow
+      \item not very precise
+      \end{itemize}
+      \begin{figure}
+      \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
+      \:
+      \includegraphics[width=0.4\textwidth]{gc_tsukuba_own}
+      \end{figure}
+}
+
+
+\frame {
+  \frametitle{Block Matching}
+    \begin{itemize}
+      \item faster
+      \item interpretation missing
+    \end{itemize}
+    \begin{figure}
+    \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
+    \:
+    \includegraphics[width=0.4\textwidth]{bm_tsukuba_own}
+    \end{figure}
+
+}
+
+\frame{
+    \frametitle{Semi Global Block Matching}
+    \begin{itemize}
+      \item not in Python (used C++ implementatie)
+      \item fastest
+      \item good depthmap
+      \item much noise (needs tuning)
+    \end{itemize}
+    \begin{figure}
+    \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
+    \:
+    \includegraphics[width=0.4\textwidth]{sgbm_tsukuba_own}
+    \end{figure}
+}
+
+
+
+\section{Planning}
 \frame
 {
   \frametitle{Planning}
   \begin{itemize}
     \item Week 1
       \begin{itemize}
-        \item Reading literature
-        \item Getting webcams to work
-        \item Choosing dense algorithm
+        \item {\bf done} Reading literature
+        \item {\bf done} Getting webcams to work
+        \item {\bf done} Choosing dense algorithm
       \end{itemize}
     \item Week 2 and 3
       \begin{itemize}
         \item Implementing
           \begin{itemize}
-            \item Camera calibration
-            \item Rectification of images using epipolar geometry
-            \item Dense disparity map algorithm
+            \item \emph{done} Camera calibration
+            \item {\bf done} Rectification of images using epipolar geometry
+            \item \emph{done} Dense disparity map algorithm
           \end{itemize}
         \item Halfway report
       \end{itemize}
@@ -136,6 +190,23 @@
             \item Remove background using dense disparity map
           \end{itemize}
       \end{itemize}
+  \end{itemize}
+}
+
+\frame {
+  \frametitle{new planning - week 3}
+  \begin{itemize}
+    \item Martijn en Moos
+    \begin{itemize}
+      \item Fine tuning calibration
+      \item Cropping of rectified images
+    \end{itemize}
+    \item Sebastian en Sander
+    \begin{itemize}
+      \item Fine tuning parameters
+      \item Completely understand the algorithms
+      \item Depth map normalize
+    \end{itemize}
   \end{itemize}
 }
 \end{document}
