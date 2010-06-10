@@ -1,8 +1,7 @@
-import cv
 import os.path
 from optparse import OptionParser
-from camfunctions import *
-from camconstants import *
+
+from stereoheader import *
 from chessboard_data import *
 
 def stereoCalibrate(nboards, filename="chessboards.txt"):

@@ -1,6 +1,4 @@
-import cv
-from camfunctions import *
-from stereorectify import *
+from stereoheader import *
 
 def getStereoImages():
   (c1, c2) = genCamWindows("Cam 1", "Cam 2")
@@ -17,6 +15,7 @@ def getStereoImages():
     k = cv.WaitKey(10)
 
     if k == 0x20:
+      print "Image pair saved."
       cv.SaveImage("im1.png", frame1)
       cv.SaveImage("im2.png", frame2)
     

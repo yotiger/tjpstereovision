@@ -1,6 +1,4 @@
-import cv
-import sys
-from findfundamental import *
+from stereoheader import *
 
 def genCamWindows(n1, n2):
   cv.NamedWindow(n1, cv.CV_WINDOW_AUTOSIZE)
