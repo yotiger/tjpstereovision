@@ -1,7 +1,4 @@
-import cv
-from camfunctions import *
-from camconstants import *
-from stereocalibrate import *
+from stereoheader import *
 
 def stereoRectify(calibdir="calib"):
   (CM1, CM2, D1, D2, R, T, E, F) = loadCalibration(calibdir)
