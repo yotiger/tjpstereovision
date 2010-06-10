@@ -34,9 +34,14 @@ def stereoCalibrate(nboards, filename="chessboards.txt"):
   E = cv.CreateMat(3, 3, cv.CV_64F)
   F = cv.CreateMat(3, 3, cv.CV_64F)
 
+  cv.SetIdentity(CM1)
+  cv.SetIdentity(CM2)
+  cv.Zero(D1)
+  cv.Zero(D2)
+
   print "Running stereo calibration..."
 
-  cv.StereoCalibrate(objectPoints, imagePoints1, imagePoints2, nPoints, CM1, D1, CM2, D2, IMSIZE, R, T, E, F,
+  cv.StereoCalibrate(objectPoints, imagePoints1, imagePoints2, nPoints, CM1, D1, CM2, D2, (640, 480), R, T, E, F,
                      flags=cv.CV_CALIB_ZERO_TANGENT_DIST |
                      cv.CV_CALIB_SAME_FOCAL_LENGTH)
 
