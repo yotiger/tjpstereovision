@@ -16,17 +16,22 @@ if not capture:
 
 while 1:
     frame = cv.QueryFrame(capture)
+    resframe = cv.QueryFrame(capture)
     if frame == None:
         break
 
-    cv.ShowImage('Camera 1', frame)
     k = cv.WaitKey(10)
 
-    resframe = cv.QueryFrame(capture)
     corners = cv.FindChessboardCorners(frame, (10, 7))
+
+    cv.ShowImage('Camera 1', frame)
     if corners[0]:
-        cv.DrawChessboardCorners(resframe, (10, 7), corners[1], corners[0])
+        cv.DrawChessboardCorners(frame, (10, 7), corners[1], corners[0])
         cv.ShowImage('Result', resframe)
+
+    if k == 0x20:
+        cv.DrawChessboardCorners(resframe, (10, 7), corners[1], corners[0])
+        cv.SaveImage('chessboardcorners.png', resframe)
 
     if k == 0x1b:
         print "ESC pressed. Exiting..."

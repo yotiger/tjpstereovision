@@ -2,9 +2,8 @@
 
 [x] getting opencv to work
 [x] getting cams to work
-[ ] getting rectify to work
+[x] getting rectify to work
    [x] finding chessboard points
-   [ ] calibrating: finding cam matrices
-   [ ] rectifying images
+   [x] calibrating: finding cam matrices
+   [x] rectifying images
 [ ] making smooth demo interface
-
