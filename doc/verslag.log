@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (Web2C 2009) (format=pdflatex 2010.3.3)  11 JUN 2010 16:41
+This is pdfTeX, Version 3.1415926-1.40.10 (Web2C 2009) (format=pdflatex 2010.3.3)  11 JUN 2010 17:34
 entering extended mode
  %&-line parsing enabled.
 **verslag.tex
@@ -75,18 +75,18 @@ Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
 ) (./verslag.aux)
 \openout1 = `verslag.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
 
 *geometry auto-detecting driver*
 *geometry detected driver: pdftex*
@@ -118,7 +118,7 @@ driver: pdftex
 \topmargin  -15.36449pt
 \headheight 0.0pt
 \headsep    0.0pt
-\footskip   0.0pt
+\footskip   28.45274pt
 \marginparwidth 57.0pt
 \marginparsep   11.0pt
 \columnsep  10.0pt
@@ -143,11 +143,11 @@ driver: pdftex
 \everyMPtoPDFconversion=\toks17
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 15.
+(Font)              <12> on input line 19.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 15.
+(Font)              <8> on input line 19.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 15.
+(Font)              <6> on input line 19.
  [1
 
 {//var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./verslag.toc
@@ -163,28 +163,24 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 [1] <./images/Epipolar_geometry.png, id=13, 602.25pt x 401.5pt>
 File: ./images/Epipolar_geometry.png Graphic file (type png)
 
-<use ./images/Epipolar_geometry.png>
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[2] <./images/depthmap.png, id=22, 222.8325pt x 185.69376pt>
+<use ./images/Epipolar_geometry.png> [2 <./images/Epipolar_geometry.png>]
+<./images/depthmap.png, id=23, 222.8325pt x 185.69376pt>
 File: ./images/depthmap.png Graphic file (type png)
 
 <use ./images/depthmap.png>
-<./images/depthmap_original.jpg, id=23, 222.8325pt x 185.69376pt>
+<./images/depthmap_original.jpg, id=24, 222.8325pt x 185.69376pt>
 File: ./images/depthmap_original.jpg Graphic file (type jpg)
 
-<use ./images/depthmap_original.jpg> [3 <./images/Epipolar_geometry.png> <./ima
-ges/depthmap.png (PNG copy)> <./images/depthmap_original.jpg>]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 140.
+<use ./images/depthmap_original.jpg>
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 148.
 
 
 (/usr/share/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 140.
-
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 148.
+ [3 <./images/depthmap.png (PNG copy)> <./images/depthmap_original.jpg>]
 <./images/matching_problems_direction.png, id=32, 734.745pt x 235.88126pt>
 File: ./images/matching_problems_direction.png Graphic file (type png)
 
@@ -197,55 +193,47 @@ irection.png> <./images/matching_problems_occlusion.png>]
 <./images/chessboardcorners.png, id=39, 465.74pt x 422.57875pt>
 File: ./images/chessboardcorners.png Graphic file (type png)
 
-<use ./images/chessboardcorners.png>
-<./images/leftown.png, id=40, 642.4pt x 481.8pt>
+<use ./images/chessboardcorners.png> [5 <./images/chessboardcorners.png (PNG co
+py)>] <./images/leftown.png, id=43, 642.4pt x 481.8pt>
 File: ./images/leftown.png Graphic file (type png)
- <use ./images/leftown.png>
-<./images/rightown.png, id=41, 642.4pt x 481.8pt>
+
+<use ./images/leftown.png> <./images/rightown.png, id=44, 642.4pt x 481.8pt>
 File: ./images/rightown.png Graphic file (type png)
- <use ./images/rightown.png>
-<./images/leftownr.png, id=42, 642.4pt x 481.8pt>
+
+<use ./images/rightown.png> <./images/leftownr.png, id=45, 642.4pt x 481.8pt>
 File: ./images/leftownr.png Graphic file (type png)
- <use ./images/leftownr.png>
-<./images/rightownr.png, id=43, 642.4pt x 481.8pt>
+
+<use ./images/leftownr.png> <./images/rightownr.png, id=46, 642.4pt x 481.8pt>
 File: ./images/rightownr.png Graphic file (type png)
 
-<use ./images/rightownr.png>
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[5] <./images/gc_tsukuba_own.jpg, id=47, 385.44pt x 289.08pt>
+<use ./images/rightownr.png> [6 <./images/leftown.png (PNG copy)> <./images/rig
+htown.png (PNG copy)> <./images/leftownr.png (PNG copy)> <./images/rightownr.pn
+g (PNG copy)>] <./images/gc_tsukuba_own.jpg, id=51, 385.44pt x 289.08pt>
 File: ./images/gc_tsukuba_own.jpg Graphic file (type jpg)
 
 <use ./images/gc_tsukuba_own.jpg>
-<./images/disp_tsukuba_orig.jpg, id=48, 385.44pt x 289.08pt>
+<./images/disp_tsukuba_orig.jpg, id=52, 385.44pt x 289.08pt>
 File: ./images/disp_tsukuba_orig.jpg Graphic file (type jpg)
 
 <use ./images/disp_tsukuba_orig.jpg>
-<./images/bm_tsukuba_own.jpg, id=49, 385.44pt x 289.08pt>
+<./images/bm_tsukuba_own.jpg, id=53, 385.44pt x 289.08pt>
 File: ./images/bm_tsukuba_own.jpg Graphic file (type jpg)
 
 <use ./images/bm_tsukuba_own.jpg>
 File: ./images/disp_tsukuba_orig.jpg Graphic file (type jpg)
- <use ./images/disp_tsukuba_orig.jpg>
-<./images/sgbm_tsukuba_own.jpg, id=50, 385.44pt x 289.08pt>
+ <use ./images/disp_tsukuba_orig.jpg> [7 <./images/gc_tsukuba_own.jpg> <./image
+s/disp_tsukuba_orig.jpg> <./images/bm_tsukuba_own.jpg>] <./images/sgbm_tsukuba_
+own.jpg, id=57, 385.44pt x 289.08pt>
 File: ./images/sgbm_tsukuba_own.jpg Graphic file (type jpg)
 
 <use ./images/sgbm_tsukuba_own.jpg>
 File: ./images/disp_tsukuba_orig.jpg Graphic file (type jpg)
  <use ./images/disp_tsukuba_orig.jpg>
-[6 <./images/chessboardcorners.png (PNG copy)>]
-
-LaTeX Warning: Text page 7 contains only floats.
-
-[7 <./images/leftown.png (PNG copy)> <./images/rightown.png (PNG copy)> <./imag
-es/leftownr.png (PNG copy)> <./images/rightownr.png (PNG copy)> <./images/gc_ts
-ukuba_own.jpg> <./images/disp_tsukuba_orig.jpg> <./images/bm_tsukuba_own.jpg>]
-(./verslag.bbl [8 <./images/sgbm_tsukuba_own.jpg>]) [9] (./verslag.aux) ) 
+[8 <./images/sgbm_tsukuba_own.jpg>] (./verslag.bbl) [9] (./verslag.aux) ) 
 Here is how much of TeX's memory you used:
  1488 strings out of 494969
  20487 string characters out of 3180209
- 75365 words of memory out of 3000000
+ 73378 words of memory out of 3000000
  4688 multiletter control sequences out of 15000+200000
  8409 words of font info for 30 fonts, out of 3000000 for 9000
  68 hyphenation exceptions out of 8191
@@ -263,7 +251,7 @@ b></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-dist/font
 s/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmtt10.pfb>
-Output written on verslag.pdf (10 pages, 2214839 bytes).
+Output written on verslag.pdf (10 pages, 2216022 bytes).
 PDF statistics:
  109 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
