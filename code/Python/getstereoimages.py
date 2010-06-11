@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from stereoheader import *
 
 def getStereoImages():

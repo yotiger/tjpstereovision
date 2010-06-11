@@ -8,7 +8,13 @@ def findstereocorrespondence(image_left, image_right):
     # from the left and the right cameras, respectively
     (r, c) = (image_left.rows, image_left.cols)
     disparity = cv.CreateMat(r, c, cv.CV_16S)
-    state = cv.CreateStereoBMState(cv.CV_STEREO_BM_BASIC)
+    state = cv.CreateStereoBMState()
+    state.preFilterType = 1
+    state.preFilterSize = 21
+    state.preFilterCap = 7
+    state.minDisparity = 0
+    state.numberOfDisparities = 32
+    state.speckleWindowSize = 20
     cv.FindStereoCorrespondenceBM(image_left, image_right, disparity, state)
     return disparity
 
@@ -16,6 +22,6 @@ def findstereocorrespondence(image_left, image_right):
 if __name__ == '__main__':
     (l, r) = [cv.LoadImageM(f, cv.CV_LOAD_IMAGE_GRAYSCALE) for f in sys.argv[1:]]
     disparity = findstereocorrespondence(l, r)
-    disparity_visual = cv.CreateMat(l.rows, l.cols, cv.CV_8U)
-    cv.ConvertScale(disparity, disparity_visual, -16)
-    cv.SaveImage("disparityBM.jpg", disparity_visual)
+    #disparity_visual = cv.CreateMat(l.rows, l.cols, cv.CV_8U)
+    #cv.ConvertScale(disparity, disparity_visual, -16)
+    cv.SaveImage("disparityBM.jpg", disparity)
