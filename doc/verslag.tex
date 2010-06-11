@@ -35,12 +35,6 @@ feed from both webcams at all times.
 We will have to get acquainted with the library OpenCV. See section
 \ref{opencv}.
 
-\section{Implementation}
-
-\subsection{OpenCV}
-\label{opencv}
-OpenCV is a library of programming functions for real time computer vision. By using this library we can constrain our tasks to integrating various parts of OpenCV and expanding it where possible. If we would not use OpenCV, we would not have enough time to achieve our goal. OpenCV is a C library but has python binding which we will use to decrease the risk of programming errors.
-
 \section{Theory}
 
 \subsection{Epipolar geometry}
@@ -167,6 +161,54 @@ that specific algorithm.
 It is a bit slow and not the best algorithm to handle occlusion but because it is
 easy to use we will at first use this algorithm and later replace it
 with a better working one.
+
+\section{Implementation}
+
+\subsection{OpenCV}
+\label{opencv}
+OpenCV is a library of programming functions for real time computer vision. By using this library we can constrain our tasks to integrating various parts of OpenCV and expanding it where possible. If we would not use OpenCV, we would not have enough time to achieve our goal. OpenCV is a C library but has python binding which we will use to decrease the risk of programming errors.
+
+\subsection{Calibration}
+\label{calib_implement}
+OpenCV has a separate function for calibrating a set of stereo cameras. This function\footnote{See stereoCalibrate in the openCV documentation} uses as input a list of coordinates of points in the left image and the coordinates of the same points in the world in the right image, and a set of coordinates where these points actually lie in the real world (3D coordinates).
+
+\subsubsection{Chessboard points}
+As input for the calibration, we use the intersection points of a chessboard. These points on the chessboard are recognized by the stereo cameras and a list of coordinates is returned, see figure \ref{chessboardcorners}. The algorithm for this recognition isn't covered here.\footnote{See the openCV documentation for the function findChessboardCorners for more information}
+
+Because we are looking for the relationship between the cameras and not the relationship between the cameras
+and the actual world, we can choose the origin for these ``real world points'' however we like. As we are using the chessboard, it is very convenient to choose the x and y axes along the sides of the chessboard, so that the first intersection lies at $(0, 0, 0)$ in the real world.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{chessboardcorners}
+  \caption{The recognized chessboardpoints by the OpenCV function `findChessboardCorners'\label{chessboardcorners}}
+\end{figure}
+
+\subsubsection{Output}
+The calibration function outputs a set of camera matrices, a set of distortion coefficients for both cameras (to correct for lens distortion) and a translation/rotation matrix relating the first camera to the second. This output is used by the rectification algorithm explained below.
+
+\subsection{Rectification}
+Using the calibration parameters generated, the rectification algorithm can transform the images so that the epipolar geometry in both images is colinear and horizontal. This constrains the correspondence problem to one horizontal line per pixel.\footnote{As we will see later, constraining to just one line of pixels is not optimal because of noise}
+
+There are two different kind of rectification algorithms implemented in OpenCV. One uses calibration parameters and another one does the same trick with no calibration, but this generates much less precise results. We have chosen for the calibrated method. The uncalibrated algorithm used by openCV is by Hartley (see \cite{Hartley99}).
+
+The rectification algorithm outputs two matrices that govern the homogenous transformations necessary to rectify the left and right images. Once these matrices are calculated, as long as the cameras don't move in relation to each other, they can be reused.
+
+The final step concerning rectification is calculating a map that maps pixels in the new rectified image to pixels in the old image.\footnote{The other way around would not generate a satisfying result, as there is no guarantee that a pixel in the original will fall on exactly a pixel in the new image, so interpolation is necessary} This map is then used to remap the original images to the rectified images using the OpenCV function Remap. A set of images with their rectified counterparts
+is seen in figure \ref{unrectified} and \ref{rectified}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\textwidth]{leftown}
+  \includegraphics[width=0.4\textwidth]{rightown}
+  \caption{Unrectified images}
+  \label{unrectified}
+
+  \includegraphics[width=0.4\textwidth]{leftownr}
+  \includegraphics[width=0.4\textwidth]{rightownr}
+  \caption{Rectified images}
+  \label{rectified}
+\end{figure}
 
 \newpage
 \section{Planning}
