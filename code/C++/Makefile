@@ -15,8 +15,8 @@
     OPENCVFLAGS = `pkg-config --libs --cflags opencv`
 
 
-    .PHONY: all clean distclean 
-    all:: ${TARGET1} ${TARGET2} 
+#    .PHONY: all clean distclean 
+    all:: clean ${TARGET1} ${TARGET2} 
 
 
     ${TARGET1}:  

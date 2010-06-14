@@ -130,12 +130,15 @@ method we calculate the pixel's distance from the camera.  The depth
 is then translated to a depth map where points closer to the camera
 are almost white whereas points further away are almost black. Points
 in between are shown in gray-scale, which get darker the further away
-the point gets from the camera.
+the point gets from the camera. See Figure \ref{dm_example} for an
+example depth map with original image.
 
 \begin{figure} \centering
 \includegraphics[width=0.3\textwidth]{depthmap}
 \includegraphics[width=0.3\textwidth]{depthmap_original}
-\caption{A depthmap with the corresponding picture}
+\caption{A depthmap with the corresponding picture, gray values show
+  the depth of the image}
+\label{dm_exapmle}
 \end{figure}
 
 To achieve this you have a whole list of algorithms that do the
@@ -167,8 +170,8 @@ calculations:
 \centering
 \includegraphics[width=0.8\textwidth]{matching_problems_direction}
 \caption{On the left image the window is completely on the left of the
-pole, whereas in the right image, the window is completely on the
-right}
+  rightmost pole, whereas in the right image, the window is completely
+  on the right side of the rightmost pole}
 \label{dirprob}
 \end{figure}
 
