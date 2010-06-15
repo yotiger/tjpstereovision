@@ -6,6 +6,7 @@ def getStereoImages():
 
   print "Press <space> to get stereo image pair."
 
+  count = 1
   while 1:
     frame1 = cv.QueryFrame(c1)
     frame2 = cv.QueryFrame(c2)
@@ -17,8 +18,9 @@ def getStereoImages():
 
     if k == 0x20:
       print "Image pair saved."
-      cv.SaveImage("im1.bmp", frame1)
-      cv.SaveImage("im2.bmp", frame2)
+      cv.SaveImage("im{0}.bmp".format(count), frame1)
+      cv.SaveImage("im{0}.bmp".format(count + 1), frame2)
+      count += 2
     
     if k == 0x1b:
       print "ESC pressed. Exiting..."

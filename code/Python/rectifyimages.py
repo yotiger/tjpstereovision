@@ -1,12 +1,13 @@
 #!/usr/bin/python
 import cv
+import sys
 from camfunctions import *
 from camconstants import *
 from stereorectify import *
 
 def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", f2="im2rect.bmp"):
   (CM1, CM2, D1, D2, R, T, E, F) = loadCalibration(calibdir)
-  (R1, R2, P1, P2, Q) = loadRectif(rectdir)
+  (R1, R2, P1, P2, Q, roi) = loadRectif(rectdir)
 
   dst1 = cv.CloneMat(im1)
   dst2 = cv.CloneMat(im2)
@@ -32,7 +33,8 @@ def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", 
   print "Saved images to '{0}' and '{1}'.".format(f1, f2)
 
 if __name__ == "__main__":
-  # HARDCODED DEBUG STATEMENTS
-  im1 = cv.LoadImageM("im1.bmp")
-  im2 = cv.LoadImageM("im2.bmp")
-  rectifyImages(im1, im2)
+  im1f = sys.argv[1] + ".bmp"
+  im2f = sys.argv[2] + ".bmp"
+  im1 = cv.LoadImageM(im1f)
+  im2 = cv.LoadImageM(im2f)
+  rectifyImages(im1, im2, f1 = sys.argv[1] + "rect.bmp", f2 = sys.argv[2] + "rect.bmp")

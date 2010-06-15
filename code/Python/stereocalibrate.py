@@ -45,8 +45,8 @@ def stereoCalibrate(nboards, filename="chessboards.txt"):
   print "Running stereo calibration..."
 
   cv.StereoCalibrate(objectPoints, imagePoints1, imagePoints2, nPoints, CM1, D1, CM2, D2, (640, 480), R, T, E, F,
-                     flags=cv.CV_CALIB_ZERO_TANGENT_DIST |
-                     cv.CV_CALIB_SAME_FOCAL_LENGTH)
+                     flags=cv.CV_CALIB_SAME_FOCAL_LENGTH |
+                     cv.CV_CALIB_ZERO_TANGENT_DIST)
 
   print "Done."
   return (CM1, CM2, D1, D2, R, T, E, F)
