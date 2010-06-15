@@ -21,11 +21,11 @@
     all:: ${TARGET1} ${TARGET2} ${TARGET3}
 
     ${TARGET1}:  
-	g++ ${CCFLAGS} ${OPENCVFLAGS} ${SRCS1} -o ${TARGET1}
+	gcc ${CCFLAGS} ${OPENCVFLAGS} ${SRCS1} -o ${TARGET1}
     ${TARGET2}:  
-	g++ ${CCFLAGS} ${OPENCVFLAGS} ${SRCS2} -o ${TARGET2}
+	gcc ${CCFLAGS} ${OPENCVFLAGS} ${SRCS2} -o ${TARGET2}
     ${TARGET3}:  
-	g++ ${CCFLAGS} ${OPENCVFLAGS} ${SRCS3} -o ${TARGET3}
+	gcc ${CCFLAGS} ${OPENCVFLAGS} ${SRCS3} -o ${TARGET3}
 
     clean:: 
 	-rm -f *~ *.o ${TARGET1} ${TARGET2} ${TARGET3}

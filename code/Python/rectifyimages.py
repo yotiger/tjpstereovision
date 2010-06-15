@@ -5,7 +5,7 @@ from camfunctions import *
 from camconstants import *
 from stereorectify import *
 
-def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", f2="im2rect.bmp"):
+def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", f2="im2rect.bmp", saveImages=True):
   (CM1, CM2, D1, D2, R, T, E, F) = loadCalibration(calibdir)
   (R1, R2, P1, P2, Q, roi) = loadRectif(rectdir)
 
@@ -28,9 +28,12 @@ def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", 
 
   # CONTINUE WORK HERE
   print "Done."
-  cv.SaveImage(f1, dst1)
-  cv.SaveImage(f2, dst2)
-  print "Saved images to '{0}' and '{1}'.".format(f1, f2)
+  if saveImages:
+    cv.SaveImage(f1, dst1)
+    cv.SaveImage(f2, dst2)
+    print "Saved images to '{0}' and '{1}'.".format(f1, f2)
+
+  return dst1, dst2
 
 if __name__ == "__main__":
   im1f = sys.argv[1] + ".bmp"
