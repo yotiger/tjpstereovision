@@ -8,3 +8,4 @@ from stereorectify import *
 from chessboard_data import *
 from getstereoimages import *
 from rectifyimages import *
+from depthfunctions import *
