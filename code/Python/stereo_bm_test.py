@@ -9,12 +9,16 @@ def findstereocorrespondence(image_left, image_right):
     (r, c) = (image_left.rows, image_left.cols)
     disparity = cv.CreateMat(r, c, cv.CV_16S)
     state = cv.CreateStereoBMState()
+    state.SADWindowSize = 13
     state.preFilterType = 1
-    state.preFilterSize = 21
-    state.preFilterCap = 7
+    state.preFilterSize = 9
+    state.preFilterCap = 63
     state.minDisparity = 0
-    state.numberOfDisparities = 32
-    state.speckleWindowSize = 20
+    state.numberOfDisparities = 16
+    state.textureThreshold = 15
+    state.speckleRange = 32
+    state.speckleWindowSize = 150
+#    state.disp12MaxDiff = 1
     cv.FindStereoCorrespondenceBM(image_left, image_right, disparity, state)
     return disparity
 

@@ -50,9 +50,9 @@ int main(int argc, char** argv){
 	int uniqueness = 10;
 	int speckleWS = 100;
 	int speckleSize = 32;
-	bool orig=false;
-		
-	StereoSGBM sgbm(mindisp, maxdisp, SADsize, 8*Pground, 32*Pground, disp12MaxDiff, \
+	bool orig=true;
+		//, disp12MaxDiff, 
+	StereoSGBM sgbm(mindisp, maxdisp, SADsize, 8*Pground, 16*Pground, disp12MaxDiff, \  
 			preFilterCap, uniqueness, speckleWS, speckleSize, orig);
 	sgbm(m1,m2,disp);
 
