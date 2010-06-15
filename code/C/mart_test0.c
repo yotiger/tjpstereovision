@@ -1,15 +1,6 @@
 #include <stdio.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include <opencv/cvcompat.h>
-#include <opencv/cvtypes.h>
-#include <opencv/cvver.h>
-#include <opencv/cvwimage.h>
-#include <opencv/cxcore.h>
-#include <opencv/cxerror.h>
-#include <opencv/cxflann.h>
-#include <opencv/cxmisc.h>
-#include <opencv/cxtypes.h>
 
 void fatal(char *message) {
     printf("[!!] Error: %s\n", message);

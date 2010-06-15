@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <cv.h>
+#include <highgui.h>
 
 void fatal(char *message) {
     printf("[!!] Error: %s\n", message);
@@ -9,7 +9,7 @@ void fatal(char *message) {
 
 void usage(char *progname) {
     printf("Usage: %s <effect> [avifile]\n", progname);
-    printf(" effect could be: 'none', 'smooth', 'chessboard'\n");
+    printf(" effect could be: 'none', 'smooth', 'canny', 'chessboard'\n");
     exit(1);
 }
 
@@ -26,13 +26,21 @@ void onTrackbarSlide(int pos) {
     );
 }
 
+IplImage *doCanny(IplImage *in, double lowTresh, 
+                  double highTresh, double aperture) {
+    IplImage *out = cvCreateImage(cvGetSize(in), IPL_DEPTH_8U, 1);
+    cvCvtColor(in, out, CV_RGB2GRAY);
+    cvCanny(out, out, lowTresh, highTresh, aperture);
+    return out;
+}
+
 
 int main(int argc, char* argv[]) {
 
     cvNamedWindow("foo", CV_WINDOW_AUTOSIZE);
 
     int file_capture;
-    int smoothing = 0, chessboard = 0;
+    int smoothing = 0, chessboard = 0, canny = 0;
 
     if (argc < 2)
         usage(argv[0]);
@@ -45,6 +53,9 @@ int main(int argc, char* argv[]) {
     } else if (strcmp(argv[1], "chessboard") == 0) {
         chessboard = 1;
         printf("Searching for chessboard.\n");
+    } else if (strcmp(argv[1], "canny") == 0) {
+        canny = 1;
+        printf("Using Canny edge detection.\n");
     } else {
         printf("Invalid effect: %s\n", argv[1]);
         usage(argv[0]);
@@ -104,8 +115,16 @@ int main(int argc, char* argv[]) {
                                         1);
             }
         }
+        if (canny) {
+            frame = doCanny(frame, 50, 125, 3);
+        }
 
         cvShowImage("foo", frame);
+
+        /* after effects effects */
+        if (canny) {
+            cvReleaseImage(&frame);
+        }
 
 
         slider_pos++;

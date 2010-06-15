@@ -12,7 +12,6 @@
 #include <opencv/cxmisc.h>
 #include <opencv/cxtypes.h>
 #include <opencv/cv.hpp>
-#include "optparse.h"
 
 
 using namespace std;
