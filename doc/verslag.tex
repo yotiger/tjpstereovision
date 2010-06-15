@@ -216,9 +216,40 @@ cut algorithm works.
 
 \subsubsection{Block Matching Theory}
 \label{bm_theory}
-In the following version of the paper we will explain how the block
-matching algorithm works.
+The Middlebury page divides disparity algorithms in four parts, which
+may or may not be found inside such an algorithm.
+\begin{itemize}
+\item cost computation
+\item cost aggregation
+\item disparity computation/optimization
+\item disparity refinement
+\end{itemize}
+Matching cost is mostly calculated from the intensity or color  pixel
+values. Also radiometric differences have to be kept in mind, so the
+gradient if often also calculated.\\
+Cost aggregation connects the costs of the neighbourhood of pixels.\\
+Disparity computation then calulates the match with the smallest cost
+and matches these blocks in the left and right image. Also some
+algorithms penalize occlusions or treat matches.\\
 
+
+In this algoithm the matching cost is computated hierachically by
+Mutual Information. 
+
+Cost aggregation is computed as approximation of a global energy
+function from all directions through the image.
+
+Disparity computation is don by winner takes all and supported by
+disparity refinements (consitency checking and sub-pixel
+interpolation).
+
+Multi-baseline matching is handled by fusion of disparities.
+More refinement is done by peak filtering, intensity consistent
+disparity selection and gap interpolation.
+
+
+Cost calculation
+the costs of this algorithm is caluclated from the 
 
 \section{Implementation}
 
