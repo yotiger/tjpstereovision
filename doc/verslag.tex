@@ -313,8 +313,23 @@ Because 2D Energy Minimization would be a NP-complete problem, 1D
 Computation is used which can be calculated in polynomial time. To
 cover the equally important information of different directions of the
 image, 1D lines from '\textit{all}' directions which end in the
-pixelblock are considered. 
+pixelblock are considered. In the Hirschm\"{u}ller paper 8-16 paths
+from all directions are recommended, whereas the standard algorithm in
+OpenCV calculates 5 or 8 directions due to the high memory cost. For
+our implementation we used 8 directions. For every path chosen the
+smoothed Pathcost $S(\mathbf{p},d)$ is calculated through the
+traversing Path cost 
 
+\begin{equation}
+  \label{eq:travcost}
+  $$$
+  L_{r}^'(\mathbf{p},d) = C(\mathbf{p},d) + min(L_{r}^'(\mathbf{p} -
+  \mathbf{r}, d), 
+L_{r}^'(\mathbf{p} -
+  \mathbf{r}, d - 1)
+  $$$
+\end{equation}
+ 
 The one with the lowest Energy cost is chosen. 
 % TODO block or pixel? 
 
