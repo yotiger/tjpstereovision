@@ -9,7 +9,7 @@ def findstereocorrespondence(image_left, image_right):
     (r, c) = (image_left.rows, image_left.cols)
     disparity = cv.CreateMat(r, c, cv.CV_16S)
     state = cv.CreateStereoBMState()
-    state.SADWindowSize = 13
+    state.SADWindowSize = 17
     state.preFilterType = 1
     state.preFilterSize = 9
     state.preFilterCap = 63
