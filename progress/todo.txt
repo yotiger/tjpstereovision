@@ -17,6 +17,14 @@
 [ ]    graphcut
 [ ]    finishing touch
 [ ] presentation
+    laten zien:
+    - calibratie
+    - rectificatie (live)
+    - blockmatching (live)
+    - sgblockmatching (live)
+    - graphcut (live geschoten plaatje)
+    - graphcut + bm op eigen dataset (niet live)
+    - done!
 [ ]    make it
 [ ]    prepare demo
 [ ] getting sgbm in python
