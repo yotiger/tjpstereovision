@@ -7,7 +7,7 @@ Collection of functions that work with depthmaps
 import cv
 
 # todo: or replace with pixel from other image
-def removeBackground(image, depthmap, treshold=2.0e-304, background=None):
+def removeBackground(image, depthmap, threshold=180, background=None):
   """
   Remove all pixels with values less than a certain threshold value.
 
