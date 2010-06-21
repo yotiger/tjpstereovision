@@ -14,7 +14,7 @@ def findstereocorrespondence(image_left, image_right):
     state.preFilterSize = 9
     state.preFilterCap = 63
     state.minDisparity = 0
-    state.numberOfDisparities = 16
+    state.numberOfDisparities = 64
     state.textureThreshold = 15
     state.speckleRange = 32
     state.speckleWindowSize = 150

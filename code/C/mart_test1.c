@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
         }
     } else {
         printf("Using webcam\n");
-        capture = cvCreateCameraCapture(-1);
+        capture = cvCreateCameraCapture(1);
         file_capture = 0;
     }
 

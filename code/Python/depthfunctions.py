@@ -8,13 +8,28 @@ import cv
 
 # removeBackground: remove all pixels with value's less than treshold
 # todo: or replace with pixel from other image
-def removeBackground(image, depthmap, treshold=2.0e-304, background=None):
+def removeBackground(image, depthmap, threshold=1.6e-304, background=None):
   result = cv.CreateMat(image.height, image.width, image.type)
+
+  # do a lot of conversions to use cv.Threshold and get 3C image back
+  depthmap8u = cv.CreateMat(depthmap.height, depthmap.width, cv.CV_8UC1)
+  cv.Convert(depthmap, depthmap8u)
   
-  # do all pixels
-  for i in range(0, image.height):
-    for j in range(0, image.width):
-      cv.mSet(result, i, j, cv.mGet(image, i, j))
+  depthmap_binary = cv.CreateMat(depthmap8u.height, depthmap8u.width, \
+                                 depthmap8u.type)
+  cv.Threshold(depthmap8u, depthmap_binary, threshold, 1, cv.CV_THRESH_BINARY)
+
+  depthmap_binary_16u = cv.CreateMat(depthmap.height, depthmap.width, \
+                                     cv.CV_16UC1)
+  depthmap_binary_c3  = cv.CreateMat(depthmap.height, depthmap.width, \
+                                     cv.CV_16UC3)
+  cv.Convert(depthmap_binary, depthmap_binary_16u)                    
+  # make 3-channel image from 1-channel image
+  cv.Merge(depthmap_binary_16u, depthmap_binary_16u, \
+           depthmap_binary_16u, None, \
+           depthmap_binary_c3)
+  # multiply binary image with image (black out pixels far away)
+  cv.Mul(image, depthmap_binary_c3, result)
 
   return result
 

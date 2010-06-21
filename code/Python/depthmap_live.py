@@ -13,6 +13,13 @@ if __name__ == "__main__":
   CAM_LEFT  = 1
   CAM_RIGHT = 2
 
+  # parse commandline args
+  if len(sys.argv) > 1 and sys.argv[1] == "remove-bg":
+    remove_background = True
+  else:
+    remove_background = False
+
+  # init vars
   capture_left  = cv.CaptureFromCAM(CAM_LEFT)
   capture_right = cv.CaptureFromCAM(CAM_RIGHT)
   cv.SetCaptureProperty(capture_left,  cv.CV_CAP_PROP_FRAME_WIDTH,  640)
@@ -38,8 +45,12 @@ if __name__ == "__main__":
 
     framem_left  = cv.CreateMat(480, 640, cv.CV_16UC1)
     framem_right = cv.CreateMat(480, 640, cv.CV_16UC1)
-    cv.Convert(frame_left, framem_left)
+    framem_left_col  = cv.CreateMat(480, 640, cv.CV_16UC3)
+    framem_right_col = cv.CreateMat(480, 640, cv.CV_16UC3)
+    cv.Convert(frame_left,  framem_left)
     cv.Convert(frame_right, framem_right)
+    cv.Convert(frame_left_col,  framem_left_col)
+    cv.Convert(frame_right_col, framem_right_col)
 
 
     # rectify frames
@@ -51,32 +62,39 @@ if __name__ == "__main__":
     cv.Convert(rectim_left, rectim8uc1_left)
     cv.Convert(rectim_right, rectim8uc1_right)
     
-    depthmap = findstereocorrespondence(rectim8uc1_left, rectim8uc1_right)
+    depthmat = findstereocorrespondence(rectim8uc1_left, rectim8uc1_right)
 
     
 
-    #cv.Convert(foo, bar)
-    #foo = removeBackground(framem_left, depthmap)
-    foo = depthmap
-    bar  = cv.CreateImage( (framem_left.width, framem_left.height), \
-                          cv.IPL_DEPTH_8S, 1)
+    # depthmat:
+    depthimage  = cv.CreateImage( (framem_left.width, framem_left.height), \
+                          frame_left.depth, 1)
+    cv.Convert(depthmat, depthimage)
 
-    cv.Convert(foo, bar)
-    cv.ShowImage("leftimage", bar)
-    #cv.ShowImage("rightimage", bar)
+    # show image
+    cv.ShowImage("leftimage", depthimage)
 
-    #maxi = 0
-    #for i in range(0, 480):
-    #  for j in range(0, 640):
-    #    item = cv.mGet(depthmap, i, j)
-    #    if not item == "nan" and item > maxi:
-    #      maxi = item
-    #print "max = " + str(maxi)
+
+    # Extra functions
+    # no-background-map:
+    if remove_background:
+      foo = removeBackground(framem_left_col, depthmat)
+      bar = cv.CreateImage( (frame_left_col.width, frame_left_col.height), \
+                            frame_left_col.depth, frame_left_col.nChannels)
+      cv.Convert(foo, bar)
+      cv.ShowImage("rightimage", bar)
+
+      #foo2 = removeBackground(framem_right_col, depthmat)
+      #bar2 = cv.CreateImage( (frame_left_col.width, frame_left_col.height), \
+      #                      frame_left_col.depth, frame_left_col.nChannels)
+      #cv.Convert(foo2, bar2)
+      #cv.ShowImage("rightimage", bar2)
 
     # check for exit
-    k = cv.WaitKey(10)
+    k = cv.WaitKey(33)
     if k == 0x1b:
       break
 
     
 
+    #bar = cv.GetImage(foo) # <-- better! GetImage and GetMatrix

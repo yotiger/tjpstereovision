@@ -22,12 +22,9 @@ void fatal(char *message) {
     exit(1);
 }
 
-int main(int argc, char** argv){
-	if (argc < 3)
-		fatal("USAGE sgbm img1 img2");
-
-	Mat m1(cvLoadImage(argv[1], 0));
-	Mat m2(cvLoadImage(argv[2], 0));
+Mat do_sgbm(char *img1, char *img2) {
+	Mat m1(cvLoadImage(img1, 0));
+	Mat m2(cvLoadImage(img2, 0));
 	Mat disp(m1.rows,m1.cols,CV_8U);
 
 	//output of the matrices
@@ -64,5 +61,15 @@ int main(int argc, char** argv){
 	// //		cout << "DISP[" << i << "][" << j <<"]" << disp.at<long int>(i,j) << "\n";
 	//	}
 	//}
-	imwrite("sgbm.jpg",disp8);
+
+    return disp8;
+}
+
+int main(int argc, char** argv){
+	if (argc < 3)
+		fatal("USAGE sgbm img1 img2");
+
+    Mat disp8 = do_sgbm(argv[1], argv[2]);
+    imwrite("sgbm.jpg", disp8);
+
 }
