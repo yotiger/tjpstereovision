@@ -1,6 +1,9 @@
 from stereoheader import *
 
 def menu():
+  """
+  Shows simple interface to work with the stereo vision project.
+  """
   choice = ""
   while not choice == "q":
     print "== STEREO CALIBRATION =="

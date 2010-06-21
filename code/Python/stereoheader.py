@@ -1,3 +1,6 @@
+"""
+Headerfile for the stereovision project
+"""
 import cv
 import sys
 # CALIBRATION AND RECTIFICATION

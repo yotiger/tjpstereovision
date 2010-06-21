@@ -1,7 +1,14 @@
 #!/usr/bin/python 
 from stereoheader import *
+import errors
 
 def stereoRectify(calibdir="calib"):
+  """
+  Calculate rectification parameters given a set of calibration parameters.
+
+  calibdir - directory in which the calibration parameters are present
+  """
+
   (CM1, CM2, D1, D2, R, T, E, F) = loadCalibration(calibdir)
   R1 = cv.CreateMat(3, 3, cv.CV_64F)
   R2 = cv.CreateMat(3, 3, cv.CV_64F)
@@ -21,9 +28,7 @@ def stereoRectify(calibdir="calib"):
 
 def saveRectif(rect, dir="rect"):
   filenames = ("R1.txt", "R2.txt", "P1.txt", "P2.txt", "Q.txt", "ROI.txt")
-  if not os.path.isdir(dir):
-    print "Error: Dir {0} doesn't exist. Exiting.".format(dir)
-    sys.exit(1)
+  errors.checkexists(dir, True)
   (R1, R2, P1, P2, Q, roi) = rect
 
   cv.Save("{0}/{1}".format(dir, filenames[0]), R1)
@@ -41,9 +46,7 @@ def saveRectif(rect, dir="rect"):
 def loadRectif(dir="rect"):
   filenames = ("R1.txt", "R2.txt", "P1.txt", "P2.txt", "Q.txt", "ROI.txt")
   for fn in ["{0}/{1}".format(dir, f) for f in filenames]:
-    if not os.path.exists(fn):
-      print "Error: File {0} doesn't exists. Exiting.".format(fn)
-      sys.exit(1)
+    errors.checkexists(fn)
   R1 = cv.Load("{0}/{1}".format(dir, filenames[0]))
   R2 = cv.Load("{0}/{1}".format(dir, filenames[1]))
   P1 = cv.Load("{0}/{1}".format(dir, filenames[2]))

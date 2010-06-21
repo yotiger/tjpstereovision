@@ -6,8 +6,21 @@ from camconstants import *
 from stereorectify import *
 
 def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", f2="im2rect.bmp", saveImages=True):
+  """
+  Rectify two images given the rectification parameters.
+
+  im1, im2   - to be rectified images.
+  calibdir   - directory in which calibration parameters are present
+  rectdir    - directory in which rectification parameters are present
+  f1, f2     - if saveImages is True, save the rectified images to these
+               filenames
+  saveImages - controls if the results are saved to files
+  """
+
   (CM1, CM2, D1, D2, R, T, E, F) = loadCalibration(calibdir)
   (R1, R2, P1, P2, Q, roi) = loadRectif(rectdir)
+
+  
 
   dst1 = cv.CloneMat(im1)
   dst2 = cv.CloneMat(im2)
@@ -26,7 +39,6 @@ def rectifyImages(im1, im2, calibdir="calib", rectdir="rect", f1="im1rect.bmp", 
   cv.Remap(im1, dst1, map1x, map1y)
   cv.Remap(im2, dst2, map2x, map2y)
 
-  # CONTINUE WORK HERE
   print "Done."
   if saveImages:
     cv.SaveImage(f1, dst1)

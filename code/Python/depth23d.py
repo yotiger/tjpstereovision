@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# SEBASTIAN DOCUMENTEREN!!!
+
 import cv
 import sys
 from stereorectify import loadRectif
