@@ -5,26 +5,28 @@
 \setlength{\footskip}{1cm}
 \usepackage{graphicx}
 \usepackage{url}
+%\usepackage{listings}
+\usepackage{amsmath}
+
+\graphicspath{{./images/}}
+
 
 \title{Stereo Vision using the OpenCV library} \author{Sebastian
 Dr\"oppelmann \\ Moos Hueting \\ Sander Latour \\ Martijn van der
 Veen} \date{June 2010}
-\graphicspath{{./images/}}
-
-
 \begin{document}
-
+%numbering for the equations and figures
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
 
 \begin{titlepage}
   \maketitle
   \thispagestyle{empty}
 \end{titlepage}
 
-
 \tableofcontents 
 \thispagestyle{empty}
 \newpage
-
 
 \section{Preface} 
 Stereo vision is one of the key subjects in the computer vision
@@ -205,7 +207,7 @@ Because the OpenCV library that we have chosen has the basic
 implementation of a graph cut algorithm from
 Kolmogorov\cite{kolmogorov2003}, we will start with that specific
 algorithm. It is a bit slow and not the best algorithm to handle
-occlusion but because it is easy to use we will at first use this
+occlusion, but because it is easy to use we will at first use this
 algorithm and later replace it with an implementation of the block
 matching algorithms also provided by OpenCV. 
 
@@ -214,42 +216,119 @@ matching algorithms also provided by OpenCV.
 In the following version of the paper we will explain how the graph
 cut algorithm works.
 
-\subsubsection{Block Matching Theory}
+\subsubsection{Semi Global Block Matching Theory}
 \label{bm_theory}
-The Middlebury page divides disparity algorithms in four parts, which
-may or may not be found inside such an algorithm.
+The Middlebury page divides disparity algorithms mainly into four
+parts, where some of the parts are optional. The parts are:
+
 \begin{itemize}
 \item cost computation
 \item cost aggregation
 \item disparity computation/optimization
 \item disparity refinement
 \end{itemize}
-Matching cost is mostly calculated from the intensity or color  pixel
-values. Also radiometric differences have to be kept in mind, so the
-gradient if often also calculated.\\
-Cost aggregation connects the costs of the neighbourhood of pixels.\\
-Disparity computation then calulates the match with the smallest cost
-and matches these blocks in the left and right image. Also some
-algorithms penalize occlusions or treat matches.\\
 
+\noindent\textit{Cost computation} can be done from the intensity or color
+pixel values. Radiometric differences also have to be kept in mind, so
+the gradient can also be calculated.\\
+\textit{Cost aggregation} connects the costs of the neighbourhood of
+pixels to find the cheapest (thus matching) pixel in the compare
+image. This is done through a global energy function from all
+directions through the image.\\
+\textit{Disparity computation} calulates the real disparity from the
+previously calculated energy through a winner-takes-all
+implementation.\\
+\textit{Disparity refinements} are used to further stabilize the
+disparity map. This is done via peak filtering, intensity consistent
+disparity selection and gap interpolation. Also multibaseline matching
+is done through the fusion of disparities to circumvent streaking and
+add consistency.\\
 
-In this algoithm the matching cost is computated hierachically by
-Mutual Information. 
+\emph{\textbf{Cost Calculation}}:\\
+% the costs of this algorithm is caluclated from the intensity of the
+% base pixel $I_{m\mathbf{p}}$ and the match pixel intensity
+% $I_{m\mathbf{q}}$. Here the formula $\mathbf{q} = e_{bm}(\mathbf{p},
+% d) = [p_x - d, p_y]^T$ is used where $d$ represents the disparity in
+% rectified images. The size of the matching area can influence
+% robustness of the images. Larger areas are more robust but fine
+% structures are blurred more, because of the assumption of the same
+% disparity over the whole area which isn't always true.
+The \emph{matching cost} for the blocks of pixels used for calculating
+the disparity in the OpenCV implementation are calculated through the
+implementation of the subpixel algorithm described in the paper of
+Birchfeld and Tomasi: "Depth Discontinuities by Pixel-to-Pixel Stereo"
+\cite{birchtom99}. The size of the area you choose has influence on
+the robustness of the disparity map. Larger areas are more robust but
+fine structures are blurred more, because of the assumption of the
+same disparity over the whole area which isn't always true.  This
+algorithm defines the disparity cost $C_{BT}( \mathbf{p}_{BT},d)$ for
+a chosen block of pixels $\mathbf{p}_{BT}$, where $d$ represents the disparity
+in rectified images.\\ %, on subpixel level
+%TODO check d
 
-Cost aggregation is computed as approximation of a global energy
-function from all directions through the image.
+For each pixel $row1[x], max(-maxD, 0) \leq minX \leq x < maxX \leq
+width - max(0, -minD)$, and for each disparity $minD \leq d < maxD$
+the function computes the cost $(C[(x-minX)*(maxD - minD) + (d -
+minD)])$, depending on the difference between $row1[x]$ and
+$row2[x-d]$.\\
 
-Disparity computation is don by winner takes all and supported by
-disparity refinements (consitency checking and sub-pixel
-interpolation).
+\emph{\textbf{Cost Aggregation}}:\\ 
+To smoothen wrong disparities calculated by the
+cost function and finding the right ones, the Energy of the disparity
+image is calculated from the sum of all pixel matching costs for the
+disparity of $D$. Different penalities, $P_1, P_2$ are applied for small and large
+disparity changes\eqref{equ:enerform}.
 
-Multi-baseline matching is handled by fusion of disparities.
-More refinement is done by peak filtering, intensity consistent
-disparity selection and gap interpolation.
+\begin{equation}
+%  \centering
+$$$ E(D) = \displaystyle\sum\limits_{\mathbf{p}}
+(C(\mathbf{p},D_\mathbf{p}) +
+\displaystyle\sum\limits_{\mathbf{q} \in N_\mathbf{p}} P_1
+T[|D_\mathbf{p} - D_\mathbf{q}| = 1] +
+\displaystyle\sum\limits_{\mathbf{q} \in N_\mathbf{p}} P_2
+T[|D_\mathbf{p} - D_\mathbf{q}| > 1]) $$$
+%  \caption{Energy Formula}
+  \label{equ:enerform}
+\end{equation}
 
+The penalities for small changes in disparity $P_1$ is a constant
+whereas the penality for higher disparity changes $P_2$ is also used
+to catch discontinuities on intensity changes. This can be done
+through the use of the intensity of neighbouring pixels $\mathbf{p}$
+and $\mathbf{q}$ in the base image $I_b$\eqref{equ:penality}.
+But it always has to be ensured that $P_1 \leq P_2$. Now matching
+is '\textit{only}' a question of minimizing the Energy $E(D)$.\\
+\begin{equation}
+  $$$\frac{P_{2}^{'}}{|I_{b\mathbf{p}}-I_{b\mathbf{q}}|}$$$
+%  \caption{Penality for disparity changes > 1}
+\label{equ:penality}
+\end{equation}
 
-Cost calculation
-the costs of this algorithm is caluclated from the 
+\emph{\textbf{Energy minimization}}:\\
+Because 2D Energy Minimization would be a NP-complete problem, 1D
+Computation is used which can be calculated in polynomial time. To
+cover the equally important information of different directions of the
+image, 1D lines from '\textit{all}' directions which end in the
+pixelblock are considered. In the Hirschm\"{u}ller paper 8-16 paths
+from all directions are recommended, whereas the standard algorithm in
+OpenCV calculates 5 or 8 directions due to the high memory cost. For
+our implementation we used 8 directions. For every path chosen the
+smoothed Pathcost $S(\mathbf{p},d)$ is calculated through the
+traversing Path cost 
+
+\begin{equation}
+  \label{eq:travcost}
+  $$$
+  L_{r}^'(\mathbf{p},d) = C(\mathbf{p},d) + min(L_{r}^'(\mathbf{p} -
+  \mathbf{r}, d), 
+L_{r}^'(\mathbf{p} -
+  \mathbf{r}, d - 1)
+  $$$
+\end{equation}
+ 
+The one with the lowest Energy cost is chosen. 
+% TODO block or pixel? 
+
 
 \section{Implementation}
 
@@ -323,7 +402,7 @@ fall on exactly a pixel in the new image, so interpolation is
 necessary} This map is then used to remap the original images to the
 rectified images using the OpenCV function Remap. A set of images with
 their rectified counterparts is seen in Figure \ref{unrectified} and
-\ref{rectified}.
+\ref{rectified}. 
 
 \begin{figure}[h] \centering
   \includegraphics[width=0.4\textwidth]{leftown}

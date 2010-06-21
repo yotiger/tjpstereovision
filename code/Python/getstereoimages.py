@@ -1,10 +1,18 @@
+"""
+Get pairs of stereo images
+"""
 #!/usr/bin/python
 from stereoheader import *
 
 def getStereoImages():
+  """
+  Save a number of stereo pairs to the current folder.
+  <space> - save a new pair of images
+  <esc>   - exit
+  """
   (c1, c2) = genCamWindows("Cam 1", "Cam 2")
 
-  print "Press <space> to get stereo image pair."
+  print "Press <space> to get stereo image pair, <esc> to quit."
 
   count = 1
   while 1:
@@ -24,6 +32,7 @@ def getStereoImages():
     
     if k == 0x1b:
       print "ESC pressed. Exiting..."
+      cv.DestroyAllWindows()
       break
 
 if __name__ == "__main__":

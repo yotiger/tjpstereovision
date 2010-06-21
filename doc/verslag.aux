@@ -6,10 +6,11 @@
 \@writefile{toc}{\contentsline {section}{\numberline {3}Theory}{2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Epipolar geometry}{2}}
 \newlabel{epipolar}{{3.1}{2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces All points $X_{1}, X_{2}, \cdots  , X_{L}$ lie on the same epipolar line in the right view}}{2}}
-\newlabel{fig:epipole}{{1}{2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces All points $X_{1}, X_{2}, \cdots  , X_{L}$ lie on the same epipolar line in the right view}}{2}}
+\newlabel{fig:epipole}{{3.1}{2}}
 \citation{Hartley2004}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces A depthmap with the corresponding picture}}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces A depthmap with the corresponding picture, gray values show the depth of the image}}{3}}
+\newlabel{dm_exapmle}{{3.2}{3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Rectification}{3}}
 \newlabel{rectification}{{3.2}{3}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Fundamental matrix}{3}}
@@ -17,47 +18,51 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Dense Stereo}{3}}
 \citation{kolmogorov2003}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Matching}{4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces On the left image the window is completely on the left of the pole, whereas in the right image, the window is completely on the right}}{4}}
-\newlabel{dirprob}{{3}{4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Two examples of occlusion problems when working with stereo vision}}{4}}
-\newlabel{occprob}{{4}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces On the left image the window is completely on the left of the rightmost pole, whereas in the right image, the window is completely on the right side of the rightmost pole}}{4}}
+\newlabel{dirprob}{{3.3}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Two examples of occlusion problems when working with stereo vision}}{4}}
+\newlabel{occprob}{{3.4}{4}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Graph Cut Theory}{4}}
 \newlabel{gc_theory}{{3.3.2}{4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.3}Block Matching Theory}{5}}
+\citation{birchtom99}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.3}Semi Global Block Matching Theory}{5}}
 \newlabel{bm_theory}{{3.3.3}{5}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}OpenCV}{5}}
-\newlabel{opencv}{{4.1}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Calibration}{5}}
-\newlabel{calib_implement}{{4.2}{5}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Chessboard points}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The recognized chessboard-points by the OpenCV function `findChessboardCorners'}}{5}}
-\newlabel{chessboardcorners}{{5}{5}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Output}{5}}
+\newlabel{equ:enerform}{{3.1}{5}}
+\newlabel{equ:penality}{{3.2}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}OpenCV}{6}}
+\newlabel{opencv}{{4.1}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Calibration}{6}}
+\newlabel{calib_implement}{{4.2}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Chessboard points}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces The recognized chessboard-points by the OpenCV function `findChessboardCorners'}}{6}}
+\newlabel{chessboardcorners}{{4.1}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Output}{6}}
 \citation{Hartley99}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Rectification}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Unrectified images}}{6}}
-\newlabel{unrectified}{{6}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Rectified images}}{6}}
-\newlabel{rectified}{{7}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Rectification}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Unrectified images}}{7}}
+\newlabel{unrectified}{{4.2}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Rectified images}}{7}}
+\newlabel{rectified}{{4.3}{7}}
 \citation{middlebury}
 \citation{kolmogorov2003}
 \citation{middlebury}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Dense Stereo Algorithms}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Graph Cut}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces left: Our GC depthmap, right: Middlebury GC depthmap}}{7}}
-\newlabel{gc_comp}{{8}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}Block Matching}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces left: Our BM depthmap, right: Middlebury GC depthmap}}{7}}
-\newlabel{bm_comp}{{9}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Semi Global Block Matching}{8}}
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces left: Our SGBM depthmap, right: Middlebury GC depthmap}}{8}}
-\newlabel{sgbm_comp}{{10}{8}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Planning}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Dense Stereo Algorithms}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Graph Cut}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces left: Our GC depthmap, right: Middlebury GC depthmap}}{8}}
+\newlabel{gc_comp}{{4.4}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}Block Matching}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces left: Our BM depthmap, right: Middlebury GC depthmap}}{8}}
+\newlabel{bm_comp}{{4.5}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Semi Global Block Matching}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces left: Our SGBM depthmap, right: Middlebury GC depthmap}}{9}}
+\newlabel{sgbm_comp}{{4.6}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Planning}{9}}
 \bibstyle{plain}
 \bibdata{verslag}
-\bibcite{Hartley2004}{1}
-\bibcite{Hartley99}{2}
-\bibcite{kolmogorov2003}{3}
-\bibcite{middlebury}{4}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Tasks}{9}}
+\bibcite{birchtom99}{1}
+\bibcite{Hartley2004}{2}
+\bibcite{Hartley99}{3}
+\bibcite{kolmogorov2003}{4}
+\bibcite{middlebury}{5}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Tasks}{10}}

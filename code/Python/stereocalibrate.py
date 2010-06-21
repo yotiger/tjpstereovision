@@ -7,8 +7,17 @@ from camfunctions import *
 from camconstants import *
 from stereoheader import *
 from chessboard_data import *
+import errors
 
 def stereoCalibrate(nboards, filename="chessboards.txt"):
+  """
+  Calibrate a set of stereocameras given a set of chessboard coordinates
+  captured with both cameras.
+
+  nboards  - number of boards used for calibration
+  filename - file containing the chessboard coordinates
+  """
+
   objectPoints = cv.CreateMat(1, COLS * ROWS * nboards, cv.CV_64FC3)
   nPoints = cv.CreateMat(1, nboards, cv.CV_32S)
 
@@ -51,29 +60,25 @@ def stereoCalibrate(nboards, filename="chessboards.txt"):
   print "Done."
   return (CM1, CM2, D1, D2, R, T, E, F)
 
-def saveCalibration(cal, dir="calib"):
+def saveCalibration(cal, cdir="calib"):
   filenames = ("CM1.txt", "CM2.txt", "D1.txt", "D2.txt", "R.txt", "T.txt", "E.txt", "F.txt")
-  if not os.path.isdir(dir):
-    print "Error: Dir {0} doesn't exist. Exiting.".format(dir)
-    sys.exit(1)
+  errors.checkexists(cdir, True)
   assert(len(filenames) == 8)
   (CM1, CM2, D1, D2, R, T, E, F) = cal
-  cv.Save("{0}/{1}".format(dir, filenames[0]), CM1)
-  cv.Save("{0}/{1}".format(dir, filenames[1]), CM2)
-  cv.Save("{0}/{1}".format(dir, filenames[2]), D1)
-  cv.Save("{0}/{1}".format(dir, filenames[3]), D2)
-  cv.Save("{0}/{1}".format(dir, filenames[4]), R)
-  cv.Save("{0}/{1}".format(dir, filenames[5]), T)
-  cv.Save("{0}/{1}".format(dir, filenames[6]), E)
-  cv.Save("{0}/{1}".format(dir, filenames[7]), F)
-  print "Calibration parameters written to directory '{0}'.".format(dir)
+  cv.Save("{0}/{1}".format(cdir, filenames[0]), CM1)
+  cv.Save("{0}/{1}".format(cdir, filenames[1]), CM2)
+  cv.Save("{0}/{1}".format(cdir, filenames[2]), D1)
+  cv.Save("{0}/{1}".format(cdir, filenames[3]), D2)
+  cv.Save("{0}/{1}".format(cdir, filenames[4]), R)
+  cv.Save("{0}/{1}".format(cdir, filenames[5]), T)
+  cv.Save("{0}/{1}".format(cdir, filenames[6]), E)
+  cv.Save("{0}/{1}".format(cdir, filenames[7]), F)
+  print "Calibration parameters written to directory '{0}'.".format(cdir)
 
 def loadCalibration(dir="calib"):
   filenames = ("CM1.txt", "CM2.txt", "D1.txt", "D2.txt", "R.txt", "T.txt", "E.txt", "F.txt")
   for fn in ["{0}/{1}".format(dir, f) for f in filenames]:
-    if not os.path.exists(fn):
-      print "Error: File {0} doesn't exists. Exiting.".format(fn)
-      sys.exit(1)
+    errors.checkexists(fn)
   CM1 = cv.Load("{0}/{1}".format(dir, filenames[0]))
   CM2 = cv.Load("{0}/{1}".format(dir, filenames[1]))
   D1 = cv.Load("{0}/{1}".format(dir, filenames[2]))
