@@ -1,0 +1,2 @@
+cybermaster info: http://www.crynwr.com/lego-robotics/
+cybermaster progger (c, linux): http://bricxcc.sourceforge.net/nqc/
