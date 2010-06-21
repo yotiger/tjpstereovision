@@ -1,6 +1,17 @@
+"""
+Defines some basic functions for camera usage
+"""
+
 from stereoheader import *
+import os
 
 def genCamWindows(n1, n2):
+  """
+  Generate two windows with two camera captures for use with stereo.
+
+  n1 - name of window 1
+  n2 - name of window 2
+  """
   cv.NamedWindow(n1, cv.CV_WINDOW_AUTOSIZE)
   cv.NamedWindow(n2, cv.CV_WINDOW_AUTOSIZE)
 
@@ -25,6 +36,12 @@ def genCamWindows(n1, n2):
   return (capture1, capture2)
 
 def showCam(capture, window):
+  """
+  Show a camera capture in a named window
+
+  capture - capture to be shown
+  window  - window to show capture in
+  """
   while 1:
     frame = cv.QueryFrame(capture)
     if frame == None:

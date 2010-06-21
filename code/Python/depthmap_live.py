@@ -53,8 +53,6 @@ if __name__ == "__main__":
     
     depthmap = findstereocorrespondence(rectim8uc1_left, rectim8uc1_right)
 
-    
-
     #cv.Convert(foo, bar)
     #foo = removeBackground(framem_left, depthmap)
     foo = depthmap

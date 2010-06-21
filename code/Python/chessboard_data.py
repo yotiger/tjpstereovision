@@ -1,9 +1,22 @@
+"""
+Defines functions used to get chessboard data from stereo cams,
+saving this to a file and reloading it
+"""
 from stereoheader import *
+import errors
+import os
 
 def getChessboards(n, fname="chessboards.txt"):
+  """
+  Load chessboard point coordinates from file.
+
+  n - number of boards to load from file
+  fname - filename of file to load coordinates from
+  """
   p1 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_64FC2)
   p2 = cv.CreateMat(1, n * COLS * ROWS, cv.CV_64FC2)
 
+  errors.checkexists(fname)
   f = open(fname, 'r')
   lr = 0
   for j in range(n):

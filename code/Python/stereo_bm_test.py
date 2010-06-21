@@ -3,7 +3,14 @@
 import sys
 import cv
 
-def findstereocorrespondence(image_left, image_right):
+def findstereocorrespondence(image_left, image_right, fn="disparityBM.jpg", saveImage=False):
+    """
+    Generate a disparity map from two rectified stereoimages.
+
+    image_left, image_right - the pair of stereoimages
+    fn                      - filename for saving
+    saveImage               - if set, the disparity map is saved to a file
+    """
     # image_left and image_right are the input 8-bit single-channel images
     # from the left and the right cameras, respectively
     (r, c) = (image_left.rows, image_left.cols)
@@ -20,12 +27,11 @@ def findstereocorrespondence(image_left, image_right):
     state.speckleWindowSize = 150
 #    state.disp12MaxDiff = 1
     cv.FindStereoCorrespondenceBM(image_left, image_right, disparity, state)
-    return disparity
+    if saveImage:
+      cv.SaveImage(fn, disparity)
 
+    return disparity
 
 if __name__ == '__main__':
     (l, r) = [cv.LoadImageM(f, cv.CV_LOAD_IMAGE_GRAYSCALE) for f in sys.argv[1:]]
-    disparity = findstereocorrespondence(l, r)
-    #disparity_visual = cv.CreateMat(l.rows, l.cols, cv.CV_8U)
-    #cv.ConvertScale(disparity, disparity_visual, -16)
-    cv.SaveImage("disparityBM.jpg", disparity)
+    disparity = findstereocorrespondence(l, r, saveImage=True)

@@ -5,6 +5,10 @@ import cv
 from stereorectify import loadRectif
 
 def findstereocorrespondence(image_left, image_right):
+    """
+    Generate disparity depth map from set of stereo images
+    using graph cut technique.
+    """
     # image_left and image_right are the input 8-bit single-channel images
     # from the left and the right cameras, respectively
     (r, c) = (image_left.rows, image_left.cols)
@@ -18,6 +22,7 @@ def findstereocorrespondence(image_left, image_right):
 
 
 if __name__ == '__main__':
+    # SEBASTIAN KIJK HIER NAAR 
 
     print "Load image"
     (l, r) = [cv.LoadImageM(f, cv.CV_LOAD_IMAGE_GRAYSCALE) for f in sys.argv[1:]]
@@ -26,7 +31,6 @@ if __name__ == '__main__':
     print "stereocorrespondence found"
     disparity_left_visual = cv.CreateMat(l.rows, l.cols, cv.CV_8U)
     cv.ConvertScale(disparity_left, disparity_left_visual, -16)
-   
 
     print "starting 3D representation, loading values..."
     dispmat = cv.CreateMat(disparity_left_visual.rows, disparity_left_visual.cols, cv.CV_16SC1)
@@ -37,6 +41,5 @@ if __name__ == '__main__':
     print "values loaded, reprojecting..."
     cv.ReprojectImageTo3D(dispmat, threedimg, Q)
     cv.SaveImage("3dimg.jpg", threedimg)
-    
     
     cv.SaveImage("disparity.jpg", disparity_left_visual)
