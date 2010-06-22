@@ -1,0 +1,149 @@
+\documentclass{beamer}
+
+%\colorlet{structure}{red!65!black}
+%
+%\beamertemplateshadingbackground{blue!40}{white}
+%
+\usepackage{beamerthemesplit}
+%\usepackage{hyperref}
+\usetheme{Berkeley}
+\useinnertheme{circles}
+\usecolortheme{seagull}
+
+\title[Stereo vision]{Stereo Vision using the OpenCV library}
+\author[Dr\"oppelmann \and Hueting \and Latour \and \\Van der Veen]{Sebastian Dr\"oppelmann \\ Moos Hueting \\ Sander Latour \\ Martijn van der Veen}
+\institute{University of Amsterdam}
+\date{June 2010}
+\subject{Computer vision}
+
+\begin{document}
+
+\frame
+{
+  \titlepage
+}
+
+\section{Preface}
+
+\frame
+{
+ \frametitle{Goal}
+ \begin{block}{Goal}
+   Generating a disparity depth map of the environment using stereo vision.
+ \end{block}
+}
+
+\frame{
+ \frametitle{Why it is interesting}
+   A depthmap can be used for various purposes:
+   \begin{itemize}
+    \item 3D modeling of 2D images
+    \item Tracking of objects
+    \item Recognising front objects
+    \item As information about the environment in path planning
+   \end{itemize}
+}
+
+
+\section{Problems}
+
+\frame{
+ \frametitle{Theoretical problems}
+   Stereo vision in a real life environment can be split up in several subproblems:
+   \begin{itemize}
+    \item Camera calibration problems
+    \item Generating epipolar line
+    \item Matching points in both images
+    \item Occlusion
+   \end{itemize}
+}
+
+\section{Approach}
+
+\frame
+{
+  \frametitle{Approach}
+  \begin{itemize}
+    \item Camera calibration
+    \item Epipolar geometry
+     \item Dense stereo algorithms
+      \begin{itemize}
+       \item Graph Cut
+       \item Belief Propagation
+       \item Region Based
+      \end{itemize}
+    \item Using the OpenCV library
+  \end{itemize}
+}
+
+\frame{
+  \frametitle{Separate goals}
+  The goal can be seperated into two independent subgoals:
+
+  \begin{itemize}
+   \item \textbf{Calibration and rectification} Starting with two cameras and building a rectified image
+   \item \textbf{Dense stereo} Starting with a rectified image and building a dense disparity map \\ \textit{Can use an external dataset}
+  \end{itemize}
+}
+
+\frame
+{
+  \frametitle{Practical problems}
+  \begin{itemize}
+   \item Getting webcams to work
+   \item Learning OpenCV
+   \item Selecting and understanding the right dense stereo algorithm
+  \end{itemize}
+}
+
+\section{Planning}
+
+\frame
+{
+  \frametitle{Tasks}
+  \begin{itemize}
+    \item Martijn and Moos
+    \begin{itemize}
+      \item Camera calibration
+      \item Epipolar geometry
+    \end{itemize}
+    \item Sander and Sebastian
+    \begin{itemize}
+      \item Finding corresponding points
+      \item Generating depth map
+    \end{itemize}
+  \end{itemize}
+}
+
+\frame
+{
+  \frametitle{Planning}
+  \begin{itemize}
+    \item Week 1
+      \begin{itemize}
+        \item Reading literature
+        \item Getting webcams to work
+        \item Choosing dense algorithm
+      \end{itemize}
+    \item Week 2 and 3
+      \begin{itemize}
+        \item Implementing
+          \begin{itemize}
+            \item Camera calibration
+            \item Rectification of images using epipolar geometry
+            \item Dense disparity map algorithm
+          \end{itemize}
+        \item Halfway report
+      \end{itemize}
+    \item Week 4
+      \begin{itemize}
+        \item Optimizing and testing
+        \item If there's enough time left
+          \begin{itemize}
+            \item Generate 3D image of environment
+            \item Remove background using dense disparity map
+          \end{itemize}
+      \end{itemize}
+  \end{itemize}
+}
+\end{document}
