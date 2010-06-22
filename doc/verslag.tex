@@ -224,14 +224,12 @@ cut algorithm works.
 \label{bm_theory}
 The Middlebury page divides disparity algorithms mainly into four
 parts, where some of the parts are optional. The parts are:
-
 \begin{itemize}
 \item cost computation
 \item cost aggregation
 \item disparity computation/optimization
 \item disparity refinement
 \end{itemize}
-
 \noindent\textit{Cost computation} can be done from the intensity or color
 pixel values. Radiometric differences also have to be kept in mind, so
 the gradient can also be calculated.\\
@@ -266,8 +264,8 @@ the robustness of the disparity map. Larger areas are more robust but
 fine structures are blurred more, because of the assumption of the
 same disparity over the whole area which isn't always true.  This
 algorithm defines the disparity cost $C_{BT}( \mathbf{p}_{BT},d)$ for
-a chosen block of pixels $\mathbf{p}_{BT}$, where $d$ represents the disparity
-in rectified images.\\ %, on subpixel level
+a chosen block of pixels $\mathbf{p}_{BT}$, where $d$ represents the
+disparity in rectified images.\\
 %TODO check d
 
 For each pixel $row1[x], max(-maxD, 0) \leq minX \leq x < maxX \leq
@@ -275,14 +273,12 @@ width - max(0, -minD)$, and for each disparity $minD \leq d < maxD$
 the function computes the cost $(C[(x-minX)*(maxD - minD) + (d -
 minD)])$, depending on the difference between $row1[x]$ and
 $row2[x-d]$.\\
-
 \emph{\textbf{Cost Aggregation}}:\\ 
 To smoothen wrong disparities calculated by the
 cost function and finding the right ones, the Energy of the disparity
 image is calculated from the sum of all pixel matching costs for the
 disparity of $D$. Different penalities, $P_1, P_2$ are applied for small and large
-disparity changes\eqref{equ:enerform}.
-
+disparity changes\eqref{eq:enerform}.
 \begin{equation}
 %  \centering
 $$$ E(D) = \displaystyle\sum\limits_{\mathbf{p}}
@@ -292,20 +288,19 @@ T[|D_\mathbf{p} - D_\mathbf{q}| = 1] +
 \displaystyle\sum\limits_{\mathbf{q} \in N_\mathbf{p}} P_2
 T[|D_\mathbf{p} - D_\mathbf{q}| > 1]) $$$
 %  \caption{Energy Formula}
-  \label{equ:enerform}
+  \label{eq:enerform}
 \end{equation}
-
 The penalities for small changes in disparity $P_1$ is a constant
 whereas the penality for higher disparity changes $P_2$ is also used
 to catch discontinuities on intensity changes. This can be done
 through the use of the intensity of neighbouring pixels $\mathbf{p}$
-and $\mathbf{q}$ in the base image $I_b$\eqref{equ:penality}.
+and $\mathbf{q}$ in the base image $I_b$\eqref{eq:penality}.
 But it always has to be ensured that $P_1 \leq P_2$. Now matching
 is '\textit{only}' a question of minimizing the Energy $E(D)$.\\
 \begin{equation}
   $$$\frac{P_{2}^{'}}{|I_{b\mathbf{p}}-I_{b\mathbf{q}}|}$$$
 %  \caption{Penality for disparity changes > 1}
-\label{equ:penality}
+\label{eq:penality}
 \end{equation}
 
 \emph{\textbf{Energy minimization}}:\\
@@ -318,27 +313,49 @@ from all directions are recommended, whereas the standard algorithm in
 OpenCV calculates 5 or 8 directions due to the high memory cost. For
 our implementation we used 8 directions. For every path chosen the
 smoothed Pathcost $S(\mathbf{p},d)$ is calculated through the
-traversing Path cost 
-
+traversing Path cost, were the cost $L_{r}^'(\mathbf{p},d)$\eqref{eq:travcost} represents
+the energy formula \eqref{eq:enerform} along \textbf{an} arbitrary 1D
+path. Because the numbers can add up this way to really huge numbers,
+the minimum path cost of the previous pixel is substracted. This way
+the numbers stay smaller and the path doesn't change it's minimum cost
+way, because the minimum cost of the pixel before is a constant. 
 \begin{equation}
   \label{eq:travcost}
   $$$
   L_{r}^'(\mathbf{p},d) = C(\mathbf{p},d) + min(L_{r}^'(\mathbf{p} -
-  \mathbf{r}, d), 
-L_{r}^'(\mathbf{p} -
-  \mathbf{r}, d - 1)
+\mathbf{r}, d), L_{r}^'(\mathbf{p} - \mathbf{r}, d - 1) + P_1,
+L_{r}^'(\mathbf{p} - \mathbf{r}, d + 1) + P_1, \displaystyle
+min\limits_{\mathit{i}} L_{r}^'(\mathbf{p} - \mathbf{r}, \mathit{i}) +
+P_2) - \displaystyle min\limits_{\mathit{k}} L_{r}^'(\mathbf{p} -
+\mathbf{r}, \mathit{k})
   $$$
 \end{equation}
- 
-The one with the lowest Energy cost is chosen. 
-% TODO block or pixel? 
+For precalculation all costs can be saved in an integer array of size
+$[W*H*D]$ and the aggregated costs are then saved in an equally sized
+array $S$.
+
+\emph{\textbf{Disparity Computation}}:\\
+The base disparity map $D_b$ from the base image $I_b$ is caluclated by
+picking the disparity with the minimum path cost for each pixel. This
+is done with subpixel accuracy by picking the minimum of a quadratic
+curve through the neighbour pixelcosts. The disparity map $D_m$of
+the match image from $I_m$ is calculated by traversing the epipolar
+line of pixel $q$ in the match image. The disparity is then again the
+disparity of the lowest pathcost. To enhance the quality of the
+disparity map, you can calculate the disparities again but with $I_m$
+as base image and $I_b$ as match image. After $D_m$ and $D_b$ have
+been calculated, a consitency check is done between the two. If the
+consistency between the two is too great (e.g. due to occlusion) the
+disparity is set to invalid. Also unique constrained can be switched
+on, which allows only one on one pixel mappings.
+
 
 
 \section{Implementation}
 
 \subsection{OpenCV}
 \label{opencv} OpenCV is a library of programming functions for real
-time computer vision. By using this library we can constrain our tasks
+time computer vision. By ussing this library we can constrain our tasks
 to integrating various parts of OpenCV and expanding it where
 possible. If we would not use OpenCV, we would not have enough time to
 achieve our goal. OpenCV is a C library but has python binding which
@@ -519,7 +536,6 @@ algorithm.
     \item Depth map normalize
     \end{itemize}
 
-
   \item Week 4
     \begin{itemize}
       \item Optimizing and testing
@@ -546,5 +562,4 @@ algorithm.
   \end{itemize}
 
 \bibliographystyle{plain} \bibliography{verslag}
-
 \end{document}
