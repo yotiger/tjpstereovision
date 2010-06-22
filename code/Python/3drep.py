@@ -1,8 +1,9 @@
+#!/usr/bin/python
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import math
-
+import cv
 
 #some colors
 colRed= (1, 0, 0)
@@ -17,7 +18,7 @@ colBlack = (0, 0, 0)
 
 CameraPos = [0.0, 20.0, 20.0]
 lp = [0.0, 0.0]
-
+pos = []
 
 def initGL():
     mat_emission = (0.7, 0.7, 0.7, 0.0)
@@ -114,16 +115,31 @@ def reshape( *args ):
     glViewport( *( (0,0)+args) )
     display()
 
-
 def draw_stuff():
 
-    coordinateSystem(5,5,5)
+    global pos
+#    coordinateSystem(5,5,5)
     glPushMatrix()
-    
-#    glDrawArrays(GL_POINTS, )
-#    glutSolidTeapot( 2 )
+
     glColor(255,0,0)
-    glRectd(0,0,2,3) 
+    
+    glBegin(GL_POINTS)
+    for i in pos:
+        glVertex(i)
+    glEnd()
+    # print "start Drawing"
+    # glVertexPointerf(pos)
+    # print "inbetween"
+    # glDrawArrays(GL_LINE_STRIP, 0, len(pos))
+    # print "end Drawing"
+
+#    glEnableClientState(GL_VERTEX_ARRAY)
+#    glVertexPointer(3, GL_FLOAT, 0, pos)
+#    glDrawArrays(GL_POINTS, 0, None)
+#    glDisableClientState(GL_VERTEX_ARRAY)
+#    glutSolidTeapot( 2 )
+#    glColor(255,0,0)
+#    glRectd(0,0,2,3) 
     glPopMatrix()
 
 def idle():
@@ -142,12 +158,12 @@ def zoomFunc():
             CameraPos[0] *= 0.8
             CameraPos[1] *= 0.8
             CameraPos[2] *= 0.8
-            print "Zoom in"
+#            print "Zoom in"
         elif args[0] is 4:
             CameraPos[0] *= 1.2
             CameraPos[1] *= 1.2
             CameraPos[2] *= 1.2
-            print "Zoom out"
+#            print "Zoom out"
     return onevent
 
 def motionFunc(window):
@@ -179,18 +195,41 @@ def motionFunc(window):
 def passiveFunc( *args ):
     global lp
     lp = args
-    print "new lp is: ", lp, "args", args
+#    print "new lp is: ", lp, "args", args
+
+
+def img2depth(im):
+    scale = 0.01
+    global pos
+    img = cv.LoadImageM(im, cv.CV_LOAD_IMAGE_GRAYSCALE)
+    #img = cv.CreateMat(im2.rows, im2.cols, scale*cv.CV_32F)
+    #cv.Convert(im2, img)
+
+    print "Image loaded"
+    for i in range(0, img.cols, 5):
+        for j in range(0, img.rows, 5):
+            print img[j,i] * scale
+            pos += [[i*scale, j*scale, img[j,i]*scale]]
+    print "succeeded in setting over images in vertices"
 
 
 if __name__ == "__main__":
     import sys
+
     newArgv = glutInit(sys.argv)
     print 'newArguments', newArgv
+
+
+    #create the depth vertex array
+    img2depth(newArgv[1])
+    print "image ", newArgv[1], "loaded"
+
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB )
     glutInitWindowSize(250, 250)
     glutInitWindowPosition(100, 100)
     window = glutCreateWindow("hello")
     print 'window', repr(window)
+
 
     glutDisplayFunc(display)
     glutReshapeFunc(reshape)
