@@ -269,6 +269,7 @@ width - max(0, -minD)$, and for each disparity $minD \leq d < maxD$
 the function computes the cost $(C[(x-minX)*(maxD - minD) + (d -
 minD)])$, depending on the difference between $row1[x]$ and
 $row2[x-d]$.\\
+
 \emph{\textbf{Cost Aggregation}}:\\ 
 To smoothen wrong disparities calculated by the
 cost function and finding the right ones, the Energy of the disparity
@@ -277,16 +278,17 @@ disparity of $D$. Different penalities, $P_1, P_2$ are applied for small and lar
 disparity changes\eqref{eq:enerform}.
 \begin{equation}
 %  \centering
-$$$ E(D) = \displaystyle\sum\limits_{\mathbf{p}}
+E(D) = \displaystyle\sum\limits_{\mathbf{p}}
 (C(\mathbf{p},D_\mathbf{p}) +
 \displaystyle\sum\limits_{\mathbf{q} \in N_\mathbf{p}} P_1
 T[|D_\mathbf{p} - D_\mathbf{q}| = 1] +
 \displaystyle\sum\limits_{\mathbf{q} \in N_\mathbf{p}} P_2
-T[|D_\mathbf{p} - D_\mathbf{q}| > 1]) $$$
+T[|D_\mathbf{p} - D_\mathbf{q}| > 1]) 
 %  \caption{Energy Formula}
   \label{eq:enerform}
 \end{equation}
-The penalities for small changes in disparity $P_1$ is a constant
+The 
+penalities for small changes in disparity $P_1$ is a constant
 whereas the penality for higher disparity changes $P_2$ is also used
 to catch discontinuities on intensity changes. This can be done
 through the use of the intensity of neighbouring pixels $\mathbf{p}$
@@ -299,33 +301,39 @@ is '\textit{only}' a question of minimizing the Energy $E(D)$.\\
 \label{eq:penality}
 \end{equation}
 
-\emph{\textbf{Energy minimization}}:\\
-Because 2D Energy Minimization would be a NP-complete problem, 1D
-Computation is used which can be calculated in polynomial time. To
-cover the equally important information of different directions of the
-image, 1D lines from '\textit{all}' directions which end in the
-pixelblock are considered. In the Hirschm\"{u}ller paper 8-16 paths
-from all directions are recommended, whereas the standard algorithm in
-OpenCV calculates 5 or 8 directions due to the high memory cost. For
-our implementation we used 8 directions. For every path chosen the
+\emph{\textbf{Energy minimization}}:\\ Because 2D Energy Minimization
+would be a NP-complete problem, 1D Computation is used which can be
+calculated in polynomial time. To cover the equally important
+information of different directions of the image, 1D lines from
+'\textit{all}' directions which end in the pixelblock are
+considered. In the Hirschm\"{u}ller paper 8-16 paths from all
+directions are recommended, whereas the standard algorithm in OpenCV
+calculates 5 or 8 directions due to the high memory cost. For our
+implementation we used 8 directions. For every path chosen the
 smoothed Pathcost $S(\mathbf{p},d)$ is calculated through the
-traversing Path cost, were the cost $L_{r}^'(\mathbf{p},d)$\eqref{eq:travcost} represents
-the energy formula \eqref{eq:enerform} along \textbf{an} arbitrary 1D
+traversing Path cost, were the cost
+\begin{align}
+  L_{r}(\mathbf{p},d) = 
+C(\mathbf{p},d) + min(L_{r}(\mathbf{p} -
+\mathbf{r}, d), 
+\notag\\
+L_{r}(\mathbf{p} - \mathbf{r}, d - 1) + P_1,
+\notag\\
+L_{r}(\mathbf{p} - \mathbf{r}, d + 1) + P_1,
+\\
+\displaystyle\min\limits_{\mathit{i}} L_{r}(\mathbf{p} - \mathbf{r}, \mathit{i}) +
+P_2) -
+\notag\\
+\displaystyle\min\limits_{\mathit{k}} L_{r}(\mathbf{p} -
+\mathbf{r}, \mathit{k})\notag
+\label{eq:travcost}
+\end{align}
+$L_{r}(\mathbf{p},d)$\eqref{eq:travcost} represents the energy
+formula \eqref{eq:enerform} along \textbf{an} arbitrary 1D
 path. Because the numbers can add up this way to really huge numbers,
 the minimum path cost of the previous pixel is substracted. This way
 the numbers stay smaller and the path doesn't change it's minimum cost
-way, because the minimum cost of the pixel before is a constant. 
-\begin{equation}
-  \label{eq:travcost}
-  $$$
-  L_{r}^'(\mathbf{p},d) = C(\mathbf{p},d) + min(L_{r}^'(\mathbf{p} -
-\mathbf{r}, d), L_{r}^'(\mathbf{p} - \mathbf{r}, d - 1) + P_1,
-L_{r}^'(\mathbf{p} - \mathbf{r}, d + 1) + P_1, \displaystyle
-min\limits_{\mathit{i}} L_{r}^'(\mathbf{p} - \mathbf{r}, \mathit{i}) +
-P_2) - \displaystyle min\limits_{\mathit{k}} L_{r}^'(\mathbf{p} -
-\mathbf{r}, \mathit{k})
-  $$$
-\end{equation}
+way, because the minimum cost of the pixel before is a constant.
 For precalculation all costs can be saved in an integer array of size
 $[W*H*D]$ and the aggregated costs are then saved in an equally sized
 array $S$.
@@ -459,7 +467,7 @@ version we will explain how it works in the theory part. %\ref{gc_theory}
   \centering
   \includegraphics[width=0.4\textwidth]{gc_tsukuba_own}
   \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
-  \caption{left: Our GC depthmap, right: Middlebury GC depthmap}
+  \caption{left: Our GC depthmap, right: Middlebury Ground Truth}
   \label{gc_comp}
 \end{figure}
 
@@ -480,7 +488,7 @@ part. %\ref{bm_theory}
   \centering
   \includegraphics[width=0.4\textwidth]{bm_tsukuba_own}
   \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
-  \caption{left: Our BM depthmap, right: Middlebury GC depthmap}
+  \caption{left: Our BM depthmap, right: Middlebury Ground Truth}
   \label{bm_comp}
 \end{figure}
 
@@ -499,7 +507,7 @@ algorithm.
   \centering
   \includegraphics[width=0.4\textwidth]{sgbm_tsukuba_own}
   \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
-  \caption{left: Our SGBM depthmap, right: Middlebury GC depthmap}
+  \caption{left: Our SGBM depthmap, right: Middlebury Ground Truth}
   \label{sgbm_comp}
 \end{figure}
 

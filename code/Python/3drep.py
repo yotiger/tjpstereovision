@@ -19,6 +19,8 @@ colBlack = (0, 0, 0)
 CameraPos = [0.0, 20.0, 20.0]
 lp = [0.0, 0.0]
 pos = []
+pos2 = GLuint()
+color = []
 
 def initGL():
     mat_emission = (0.7, 0.7, 0.7, 0.0)
@@ -117,30 +119,27 @@ def reshape( *args ):
 
 def draw_stuff():
 
-    global pos
-#    coordinateSystem(5,5,5)
-    glPushMatrix()
+    global pos, pos2
+    #coordinateSystem(5,5,5)
+    #glPushMatrix()
 
-    glColor(255,0,0)
     
-    glBegin(GL_POINTS)
-    for i in pos:
-        glVertex(i)
-    glEnd()
-    # print "start Drawing"
-    # glVertexPointerf(pos)
-    # print "inbetween"
-    # glDrawArrays(GL_LINE_STRIP, 0, len(pos))
-    # print "end Drawing"
+    # glBegin(GL_POINTS)
+    # for i in pos:
+    #     print i
+    #     glColor3fv((1.0, 0.0, i[2]))
+    #     glVertex(i)
+    # glEnd()
 
-#    glEnableClientState(GL_VERTEX_ARRAY)
-#    glVertexPointer(3, GL_FLOAT, 0, pos)
-#    glDrawArrays(GL_POINTS, 0, None)
-#    glDisableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glVertexPointer(3, GL_FLOAT, 0, pos)
+    glDrawArrays(GL_POINTS, 0, len(pos))
+    glDisableClientState(GL_VERTEX_ARRAY)
+
 #    glutSolidTeapot( 2 )
 #    glColor(255,0,0)
 #    glRectd(0,0,2,3) 
-    glPopMatrix()
+#    glPopMatrix()
 
 def idle():
         glutSetWindow(window)
@@ -174,6 +173,7 @@ def motionFunc(window):
         lp = args
         Alpha = (360.0 / (size[0] * 100.0)) * DX
         Beta = (360.0 / (size[1] * 100.0)) * DY
+        
 
         #RotX	
         Ytemp = math.cos(Beta) * CameraPos[1] - math.sin(Beta) * CameraPos[2]
@@ -200,18 +200,32 @@ def passiveFunc( *args ):
 
 def img2depth(im):
     scale = 0.01
-    global pos
+    global pos, pos2, color
     img = cv.LoadImageM(im, cv.CV_LOAD_IMAGE_GRAYSCALE)
     #img = cv.CreateMat(im2.rows, im2.cols, scale*cv.CV_32F)
     #cv.Convert(im2, img)
 
+    glGenBuffers(1)
+
+    
     print "Image loaded"
     for i in range(0, img.cols, 5):
         for j in range(0, img.rows, 5):
-            print img[j,i] * scale
+#            print img[j,i] * scal
+#            colArr = 
             pos += [[i*scale, j*scale, img[j,i]*scale]]
+            pos2 += [[i*scale, j*scale, img[j,i]*scale]]
+            color += [(1.0, 0.0, img[j,i]*scale)]
     print "succeeded in setting over images in vertices"
+    
+#    glGenBuffers(1)
+    glBindBuffer( GL_ARRAY_BUFFER, 1 )
+    glBufferData( GL_ARRAY_BUFFER, pos2, GL_STATIC_DRAW )
 
+    # glGenBuffers(1, color)
+    # glBindBuffer( GL_ARRAY_BUFFER, 1 )
+    # glBufferData( GL_ARRAY_BUFFER, None, color, GL_STATIC_DRAW )
+    
 
 if __name__ == "__main__":
     import sys
