@@ -5,6 +5,7 @@
 \setlength{\footskip}{1cm}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{pgf}
 %\usepackage{listings}
 \usepackage{amsmath}
 
@@ -241,8 +242,83 @@ provided by OpenCV.
 
 \subsubsection{Graph Cut Theory}
 \label{gc_theory}
-In the following version of the paper we will explain how the graph
-cut algorithm works.
+Normal stereo matching algorithms try to match a pixel in the left image to a pixel in the right image based on some individual
+property like color. Although this is a fast and reasonably accurate process it does not deal with the interlinear consistency.
+The interlinear consistency forces you to also look at interpixel properties like neighbours and will result in a much more accurate desparity map.
+\\
+In order to maintain the interlinear consistency you want to connect the pixels that are adjacent within a line and add some
+sort of weight on that connection to make it expensive to break that connection. Furthermore you want to determine the disparities
+in the entire picture that disrupt those neighbouring relations as less as possible. [ref] states that given some energy function
+you can construct a graph where the labeling with the lowest energy is equal to the minimum cut on that graph. In that respect you can 
+look at the stereo correspondance problem as a labeling problem where you have to assign disparity labels.
+We will explain this in various sections below.\\\\
+\begin{figure}[t] \centering
+\includegraphics[width=180px]{Network_flow.png}
+\caption{flow network}
+\label{flow_network}
+\end{figure}
+\noindent\textbf{Graph theory: flow networks}:\indent\\
+Figure \ref{flow_network} shows a directed graph $\mathcal{G}$ which can be formaly defined as $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$.
+$\mathcal{V}$ depicts the set of vertices or nodes in the graph, whereas $\mathcal{E}$ depicts the set of edges between vertices.\\\\
+\noindent\textbf{Graph theory applied to stereo vision}:\indent\\
+\begin{figure}[t]
+\begin{enumerate}
+ \item Create a graph $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$
+ \item $\forall_{p \epsilon \mathcal{P}}$ add $p$ to $\mathcal{V}$
+ \item add terminals $f^0$ and $f^a$ to $\mathcal{G}$
+ \item $\forall_{p,q \epsilon \mathcal{N}}$ add \{$p$,$q$\} to $\mathcal{E}$
+ \item $\forall_{p \epsilon \mathcal{V}}$ add $\{f^0,p\}$ and $\{f^a,p\}$ to $\mathcal{E}$
+ \item $\forall_{\{p,q\} \epsilon \mathcal{E}}$ set weight $w$ for $\{p,q\}$
+\end{enumerate}
+\caption{Steps for constructing a graph from picture $\mathcal{P}$}
+\label{alg:gc_construct}
+\end{figure}
+Figure \ref{alg:gc_construct} describes the process of constructing a graph $\mathcal{G}$ as discussed in the previous section
+ from a picture $\mathcal{P}$. $\mathcal{N}$ depicts a set of horizontally adjacent pixel pairs.\\\\
+\noindent\textbf{Weights}:\indent\\
+\begin{equation}
+ E(f) = E_{data}(f) + E_{smooth}(f) + E_{occ}(f)
+\end{equation}
+When two adjacent pixels have similair intensities it is likely that they are part of the same object, this means
+that during the labeling of disparities you would \emph{prefer} to assign the same label to both pixels.
+The weights in $\mathcal{G}$ encode this information, the higher the weight value the less you want to break the pixels apart.
+ 
+
+\begin{figure}[t]
+\centering
+\caption{Picture $\mathcal{P}$}
+\begin{minipage}[h]{.4\linewidth}
+\include{pgf1}
+\end{minipage}
+\hspace{.1\linewidth}
+\begin{minipage}[h]{.4\linewidth}
+\include{pgf2}
+\end{minipage}
+\end{figure}
+\begin{equation}
+ f_{p}^{C} = \left\{
+  \begin{array}{lll}
+  \alpha & \text{if} & t^{\alpha}_{p} \epsilon \mathcal{C} \\ 
+  f_{p}  & \text{if} & t^{\alpha}_{p} \epsilon \mathcal{C}
+  \end{array}
+\right.
+ \forall p \epsilon \mathcal{P}
+\end{equation}
+
+\begin{figure}[t]
+\centering
+\include{pgf6}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\include{pgf3}
+\include{pgf4}
+\caption{Graph-Cut step 1 with $f^\alpha = 1$}
+\include{pgf5}
+\include{pgf2}
+\caption{Graph-Cut step 2 with $f^\alpha = 2$}
+\end{figure}
 
 \subsubsection{Semi Global Block Matching Theory}
 \label{bm_theory}
