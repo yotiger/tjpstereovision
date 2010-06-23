@@ -1,0 +1,4 @@
+code/Python/calib
+code/Python/rect
+.*\.pyc
+doc/[^/]*\.(?!(?:tex|TEX|txt|TXT))
