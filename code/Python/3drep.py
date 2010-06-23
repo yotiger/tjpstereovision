@@ -205,7 +205,7 @@ def img2depth(im):
     #img = cv.CreateMat(im2.rows, im2.cols, scale*cv.CV_32F)
     #cv.Convert(im2, img)
 
-    glGenBuffers(1)
+#    glGenBuffers(1)
 
     
     print "Image loaded"
@@ -214,13 +214,13 @@ def img2depth(im):
 #            print img[j,i] * scal
 #            colArr = 
             pos += [[i*scale, j*scale, img[j,i]*scale]]
-            pos2 += [[i*scale, j*scale, img[j,i]*scale]]
-            color += [(1.0, 0.0, img[j,i]*scale)]
+ #           pos2 += [[i*scale, j*scale, img[j,i]*scale]]
+ #           color += [(1.0, 0.0, img[j,i]*scale)]
     print "succeeded in setting over images in vertices"
     
 #    glGenBuffers(1)
-    glBindBuffer( GL_ARRAY_BUFFER, 1 )
-    glBufferData( GL_ARRAY_BUFFER, pos2, GL_STATIC_DRAW )
+#    glBindBuffer( GL_ARRAY_BUFFER, 1 )
+#    glBufferData( GL_ARRAY_BUFFER, pos2, GL_STATIC_DRAW )
 
     # glGenBuffers(1, color)
     # glBindBuffer( GL_ARRAY_BUFFER, 1 )

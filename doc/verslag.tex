@@ -1,5 +1,6 @@
-\documentclass[a4paper]{article} 
+\documentclass[a4paper,draft]{article} 
 \usepackage[noheadfoot,margin=2cm,a4paper]{geometry} 
+\usepackage{amsmath, amsthm}
 % \addtolength{\textheight}{20mm}
 % \addtolength{\voffset}{-5mm}
 \setlength{\footskip}{1cm}
@@ -140,34 +141,28 @@ example depth map with original image.
 \includegraphics[width=0.3\textwidth]{depthmap_original}
 \caption{A depthmap with the corresponding picture, gray values show
   the depth of the image}
-\label{dm_exapmle}
+\label{dm_example}
 \end{figure}
 
 To achieve this you have a whole list of algorithms that do the
 trick.\footnote{A good overview can be found at
-http://vision.middlebury.edu/stereo/eval/}
-
+http://vision.middlebury.edu/stereo/eval/}\\
 Most of these algorithms are based on 4 principles:
-
 \begin{itemize}
 \item Graph Cut
 \item Believe Propagation
 \item Region Based / Block Matching
 \item Dynamic Programming
 \end{itemize}
-
 These algorithms have to deal with the following problems in their
-calculations:
-
+calculations
 \begin{itemize}
     \item Matching points in both images
     \item Occlusion
 \end{itemize}
 
 
-\subsubsection{Matching} 
-
-
+\subsubsection{Matching}
 \begin{figure} [h!tb]
 \centering
 \includegraphics[width=0.8\textwidth]{matching_problems_direction}
@@ -177,21 +172,20 @@ calculations:
 \label{dirprob}
 \end{figure}
 
-
-The main goal of such an algorithm is of
-matching one point in one image to the corresponding point in the
-other image. During the matching there are several tasks that the
-algorithm has to perform. At first it has to compare the epipolar
-lines of the images pixel by pixel. For every pixel on one line you
-have to find the counterpart on the corresponding epipolar line in the
-other image. Often the pixels aren't in the same order, for example if
-there is a lamp pole in front of a house, things that lie on the left
-side of the lamp pole in the left picture could sit on the right side
-in the right picture. See Figure \ref{dirprob}.
+The main goal of such an algorithm is of matching one point in one
+image to the corresponding point in the other image. During the
+matching there are several tasks that the algorithm has to perform. At
+first it has to compare the epipolar lines of the images pixel by
+pixel. For every pixel on one line you have to find the counterpart on
+the corresponding epipolar line in the other image. Often the pixels
+aren't in the same order, for example if there is a lamp pole in front
+of a house, things that lie on the left side of the lamp pole in the
+left picture could sit on the right side in the right picture. See
+Figure \ref{dirprob}.
 
 \begin{figure} [h!tb]
 \centering
-\includegraphics[width=0.8\textwidth]{matching_problems_occlusion}
+\includegraphics[width=0.6\textwidth]{matching_problems_occlusion}
 \caption{Two examples of occlusion problems when working with stereo
 vision}
 \label{occprob} 
@@ -217,30 +211,42 @@ In the following version of the paper we will explain how the graph
 cut algorithm works.
 
 \subsubsection{Semi Global Block Matching Theory}
-\label{bm_theory}
+Semi global block matching is build on the idea that you use mean data
+from blocks of pixels as pixel energy and then build up a cost array
+over the costs of all disparities from the minimum disparity to the
+maximum disparity for all the pixels. Afterwards a search is done for
+the minimum path cost in several directions of the image. The minimum
+path cost is calculated from the pixel energy with penalties for the
+disparity difference to neighbour pixels along a path that ends in the
+pixel the disparity is searched for, where the one path with the
+lowest cost is the right one. This is done on
+subpixel level. After calculation of the disparities there are some
+refinement steps to filter out peaks and noise.\\
 The Middlebury page divides disparity algorithms mainly into four
-parts, where some of the parts are optional. The parts are:
+parts, where some of the parts are optional. These parts are:
 \begin{itemize}
 \item cost computation
 \item cost aggregation
 \item disparity computation/optimization
 \item disparity refinement
 \end{itemize}
-\noindent\textit{Cost computation} can be done from the intensity or color
+\noindent For the SGBM algorithm these steps are filled in as follows:\\
+\textbf{Cost computation} can be done from the intensity or color
 pixel values. Radiometric differences also have to be kept in mind, so
 the gradient can also be calculated.\\
-\textit{Cost aggregation} connects the costs of the neighbourhood of
+\textbf{Cost aggregation} connects the costs of the neighbourhood of
 pixels to find the cheapest (thus matching) pixel in the compare
 image. This is done through a global energy function from all
 directions through the image.\\
-\textit{Disparity computation} calulates the real disparity from the
+\textbf{Disparity computation} calulates the real disparity from the
 previously calculated energy through a winner-takes-all
 implementation.\\
-\textit{Disparity refinements} are used to further stabilize the
+\textbf{Disparity refinements} are used to further stabilize the
 disparity map. This is done via peak filtering, intensity consistent
 disparity selection and gap interpolation. Also multibaseline matching
 is done through the fusion of disparities to circumvent streaking and
-add consistency.\\
+add consistency. Because refinement is a separate part and has nothing
+to do with stereovision per se, we leave it out in the explanation\\
 
 \emph{\textbf{Cost Calculation}}:\\
 % the costs of this algorithm is caluclated from the intensity of the
@@ -255,31 +261,35 @@ The \emph{matching cost} for the blocks of pixels used for calculating
 the disparity in the OpenCV implementation are calculated through the
 implementation of the subpixel algorithm described in the paper of
 Birchfeld and Tomasi: "Depth Discontinuities by Pixel-to-Pixel Stereo"
-\cite{birchtom99}. The size of the area you choose has influence on
-the robustness of the disparity map. Larger areas are more robust but
-fine structures are blurred more, because of the assumption of the
-same disparity over the whole area which isn't always true.  This
-algorithm defines the disparity cost $C_{BT}( \mathbf{p}_{BT},d)$ for
-a chosen block of pixels $\mathbf{p}_{BT}$, where $d$ represents the
-disparity in rectified images.\\
-%TODO check d
-
-For each pixel $row1[x], max(-maxD, 0) \leq minX \leq x < maxX \leq
-width - max(0, -minD)$, and for each disparity $minD \leq d < maxD$
-the function computes the cost $(C[(x-minX)*(maxD - minD) + (d -
-minD)])$, depending on the difference between $row1[x]$ and
-$row2[x-d]$.\\
+\cite{birchtom99}. The size of the area has influence on the
+robustness of the disparity map. Larger areas are more robust but fine
+structures get more blurred, because of the assumption of the same
+disparity over the whole area which isn't always true. The disparity
+cost $C_{BT}( \mathbf{p},d)$ is calculated for a chosen squareblock of
+pixels $\mathbf{p}$ from $minX$ till $maxX$, the limits of the block,
+where $d$ represents the current disparity in the rectified images and
+$x$ is the pixel in the current block. \eqref{eq:costcalc} This is
+done over all disparities between the given minimum and maximum
+disparity $minD$ and $maxD$.\\
+\begin{equation}
+  \label{eq:costcalc}
+  C_{BT}[(x-minX)*maxD - minD + (d - minD)]
+\end{equation}
+% For each pixel $row1[x], max(-maxD, 0) \leq minX \leq x < maxX \leq
+% width - max(0, -minD)$, and for each disparity $minD \leq d < maxD$
+% the function computes the cost $(C[(x-minX)*(maxD - minD) + (d -
+% minD)])$, depending on the difference between $row1[x]$ and
+% $row2[x-d]$.\\
 
 \emph{\textbf{Cost Aggregation}}:\\ 
-To smoothen wrong disparities calculated by the
-cost function and finding the right ones, the Energy of the disparity
-image is calculated from the sum of all pixel matching costs for the
-disparity of $D$. Different penalities, $P_1, P_2$ are applied for small and large
-disparity changes\eqref{eq:enerform}.
+To smoothen wrong disparities calculated by the cost function and
+finding the right ones, the Energy of the disparity image is
+calculated from the sum of all pixel matching costs for the disparity
+of $D$. Different penalties, $P_1, P_2$ are applied for small and
+large disparity changes \eqref{eq:enerform}.
 \begin{equation}
-%  \centering
 E(D) = \displaystyle\sum\limits_{\mathbf{p}}
-(C(\mathbf{p},D_\mathbf{p}) +
+(C_{BT}(\mathbf{p},D_\mathbf{p}) +
 \displaystyle\sum\limits_{\mathbf{q} \in N_\mathbf{p}} P_1
 T[|D_\mathbf{p} - D_\mathbf{q}| = 1] +
 \displaystyle\sum\limits_{\mathbf{q} \in N_\mathbf{p}} P_2
@@ -288,61 +298,65 @@ T[|D_\mathbf{p} - D_\mathbf{q}| > 1])
   \label{eq:enerform}
 \end{equation}
 The 
-penalities for small changes in disparity $P_1$ is a constant
+penalty for small changes in disparity $P_1$ is a constant
 whereas the penality for higher disparity changes $P_2$ is also used
 to catch discontinuities on intensity changes. This can be done
 through the use of the intensity of neighbouring pixels $\mathbf{p}$
-and $\mathbf{q}$ in the base image $I_b$\eqref{eq:penality}.
+and $\mathbf{q}$ in the base image $I_b$\eqref{eq:penalty}.
 But it always has to be ensured that $P_1 \leq P_2$. Now matching
-is '\textit{only}' a question of minimizing the Energy $E(D)$.\\
+is '\textit{only}' a question of minimizing the Energy $E(D)$.
 \begin{equation}
-  $$$\frac{P_{2}^{'}}{|I_{b\mathbf{p}}-I_{b\mathbf{q}}|}$$$
-%  \caption{Penality for disparity changes > 1}
-\label{eq:penality}
+  \displaystyle\frac{P_{2}^{'}}{|I_{b\mathbf{p}}-I_{b\mathbf{q}}|}
+\label{eq:penalty}
 \end{equation}
-
-\emph{\textbf{Energy minimization}}:\\ Because 2D Energy Minimization
-would be a NP-complete problem, 1D Computation is used which can be
-calculated in polynomial time. To cover the equally important
-information of different directions of the image, 1D lines from
-'\textit{all}' directions which end in the pixelblock are
-considered. In the Hirschm\"{u}ller paper 8-16 paths from all
-directions are recommended, whereas the standard algorithm in OpenCV
-calculates 5 or 8 directions due to the high memory cost. For our
-implementation we used 8 directions. For every path chosen the
-smoothed Pathcost $S(\mathbf{p},d)$ is calculated through the
-traversing Path cost, were the cost
+%\emph{\textbf{Energy minimization}}:\\ 
+Because 2D energy minimization would be a NP-complete problem, 1D
+Computation is used which can be calculated in polynomial time. To
+cover the equally important information of different directions of the
+image, 1D lines from '\textit{all}' directions which end in the
+pixelblock are considered.\ref{fig:directions}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{directions}
+  \caption{Directions of paths considered}
+  \label{fig:directions}
+\end{figure}
+\noindent In the Hirschm\"{u}ller paper 8-16 paths
+from all directions are recommended, whereas the standard algorithm in
+OpenCV calculates 5 or 8 directions due to the high memory cost. For
+our implementation we used 8 directions. For every path chosen the
+smoothed path cost $S(\mathbf{p},d)$ is calculated through the
+traversing path cost $L_{r}(\mathbf{p},d)$, were the cost represents
+the energy formula \eqref{eq:enerform} along \textbf{an} arbitrary 1D
+path \eqref{eq:trav}. Because the numbers can add up this way to
+really huge numbers, the minimum path cost of the previous pixel $\mathit{k}$ is
+substracted. This way the numbers stay smaller and the path doesn't
+change it's minimum cost way, because the minimum cost of the pixel
+before is a constant.  For precalculation all costs can be saved in an
+integer array of size $[W*H*D]$ and the aggregated costs are then
+saved in an equally sized array $S$.
 \begin{align}
+  \label{eq:trav}
   L_{r}(\mathbf{p},d) = 
-C(\mathbf{p},d) + min(L_{r}(\mathbf{p} -
-\mathbf{r}, d), 
-\notag\\
-L_{r}(\mathbf{p} - \mathbf{r}, d - 1) + P_1,
-\notag\\
-L_{r}(\mathbf{p} - \mathbf{r}, d + 1) + P_1,
-\\
-\displaystyle\min\limits_{\mathit{i}} L_{r}(\mathbf{p} - \mathbf{r}, \mathit{i}) +
-P_2) -
-\notag\\
-\displaystyle\min\limits_{\mathit{k}} L_{r}(\mathbf{p} -
-\mathbf{r}, \mathit{k})\notag
-\label{eq:travcost}
+  C_{BT}(\mathbf{p},d) + min(L_{r}(\mathbf{p} -
+  \mathbf{r}, d), 
+  \notag\\
+  L_{r}(\mathbf{p} - \mathbf{r}, d - 1) + P_1,
+  \notag\\
+  L_{r}(\mathbf{p} - \mathbf{r}, d + 1) + P_1,
+  \\
+  \displaystyle\min\limits_{\mathit{i}} L_{r}(\mathbf{p} - \mathbf{r}, \mathit{i}) +
+  P_2) -
+  \notag\\
+  \displaystyle\min\limits_{\mathit{k}} L_{r}(\mathbf{p} -
+  \mathbf{r}, \mathit{k})\notag
 \end{align}
-$L_{r}(\mathbf{p},d)$\eqref{eq:travcost} represents the energy
-formula \eqref{eq:enerform} along \textbf{an} arbitrary 1D
-path. Because the numbers can add up this way to really huge numbers,
-the minimum path cost of the previous pixel is substracted. This way
-the numbers stay smaller and the path doesn't change it's minimum cost
-way, because the minimum cost of the pixel before is a constant.
-For precalculation all costs can be saved in an integer array of size
-$[W*H*D]$ and the aggregated costs are then saved in an equally sized
-array $S$.
 
 \emph{\textbf{Disparity Computation}}:\\
 The base disparity map $D_b$ from the base image $I_b$ is caluclated by
 picking the disparity with the minimum path cost for each pixel. This
 is done with subpixel accuracy by picking the minimum of a quadratic
-curve through the neighbour pixelcosts. The disparity map $D_m$of
+curve through the neighbouring pixel costs. The disparity map $D_m$ of
 the match image from $I_m$ is calculated by traversing the epipolar
 line of pixel $q$ in the match image. The disparity is then again the
 disparity of the lowest pathcost. To enhance the quality of the
@@ -351,9 +365,7 @@ as base image and $I_b$ as match image. After $D_m$ and $D_b$ have
 been calculated, a consitency check is done between the two. If the
 consistency between the two is too great (e.g. due to occlusion) the
 disparity is set to invalid. Also unique constrained can be switched
-on, which allows only one on one pixel mappings.
-
-
+on, which enforces one on one pixel mappings.
 
 \section{Implementation}
 
@@ -390,7 +402,7 @@ intersection lies at $(0, 0, 0)$ in the real world.
 
 \begin{figure} [h!tb]
 \centering
-  \includegraphics[width=0.6\textwidth]{chessboardcorners}
+  \includegraphics[width=0.3\textwidth]{chessboardcorners}
   \caption{The recognized chessboard-points by the OpenCV function
 `findChessboardCorners'\label{chessboardcorners}}
 \end{figure}
@@ -480,9 +492,7 @@ to find the right configuration to get the best results. See Figure
 \ref{bm_comp} for comparison with the Graph Cut algorithm from
 Middlebury. We couldn't find any good block matching example to
 compare with but with the graph cut you will get the idea of how it
-has to divide the image into different depths. The theory will be
-explained in the end-version of this paper in the theory
-part. %\ref{bm_theory}
+has to divide the image into different depths.
 
 \begin{figure} [h!tb]
   \centering
@@ -501,7 +511,47 @@ binding is not yet completed and integrated into OpenCV. Because of
 this we wrote this part in C++. Just as the standard Block Matching
 the algorithm still needs to be tuned right to return the optimal
 depthmap. See Figure \ref{sgbm_comp} for comparison with the GC
-algorithm.
+algorithm. The tuning of the algorithm was one of the most important
+steps to get good results. The options you could tune were: 
+\begin{itemize}
+\item min and max disparity
+\item SAD size
+\item PreFilterCap
+\item disp12MaxDiff
+\item uniqueness
+\item speckleWindowSize and speckleRange
+\item Original
+\end{itemize}
+\noindent\emph{min and max disparity} are the minimum and maximum disparity
+values that can be found. Between these the best one is chosen for the
+disparity image. In our implementation we set the minimum disparity to
+0 and the maximum disparity we chose the image width/8, because it
+returned the best results\\
+\emph{SAD size} is the size of the blocks which is considered for the
+Energy calculation of the algorithm. The manual suggests values
+between 5 and 21 pixels. The value has to be an uneven value. We chose
+for a size of 9 to keep the calculation faster and we didn't get much
+better results with higher values.\\
+\textbf{PreFilterCap} is the value for the Tomasi cost function to cap
+the values at [-PreFilterCap, PreFilterCap] intervals. In the OpenCV
+implementation the values given can vary between 0 and 63. We chose
+for 63 because then you had the minimum noise inside the image.\\
+\textbf{disp12MaxDiff} is the maximum value in the left-right
+disparity check. We set it to 2 to get results that where
+acceptable. More didn't make a difference and less gave much noise.\\
+\textbf{uniqueness} is the switch to enable the uniqueness check. We
+switched it on.\\
+\textbf{speckleWindowSize} defines the maximum region which is
+considered as speckle / peak. In our configuration we set the value to
+100. A value less gave too much noise and a higher value didn't really
+change that much. OpenCV suggests a value between 50-200.\\
+\textbf{speckleRange} defines the disparity difference that is
+considered as speckle. This has to be a value devidable by 16 and the
+OpenCV manual suggests 16 or 32. With a value of 32 we had good
+results so we kept that.\\
+\textbf{Original} at last defines if you want to use 5 or 8 paths for
+the cost aggregation. We used the original suggested 8 paths so we
+turned on the boolean.
 
 \begin{figure} [h!tb]
   \centering
