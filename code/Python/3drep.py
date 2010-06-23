@@ -238,9 +238,9 @@ if __name__ == "__main__":
     img2depth(newArgv[1])
     print "image ", newArgv[1], "loaded"
 
-    glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB )
-    glutInitWindowSize(250, 250)
-    glutInitWindowPosition(100, 100)
+    #glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB )
+    #glutInitWindowSize(250, 250)
+    #glutInitWindowPosition(100, 100)
     window = glutCreateWindow("hello")
     print 'window', repr(window)
 
