@@ -1,0 +1,36 @@
+----[ Team Rectify ]----
+
+[x] getting opencv to work
+[x] getting cams to work
+[x] getting rectify to work
+   [x] finding chessboard points
+   [x] calibrating: finding cam matrices
+   [x] rectifying images
+[ ] making smooth demo interface
+
+[ ] documenting code
+[ ] report
+[x]    stereocalibration
+[x]    rectification
+[ ]    bm
+[ ]    sgbm
+[ ]    graphcut
+[ ]    finishing touch
+[ ] presentation
+    laten zien:
+    - calibratie
+    - rectificatie (live)
+    - blockmatching (live)
+    - sgblockmatching (live)
+    - graphcut (live geschoten plaatje)
+    - graphcut + bm op eigen dataset (niet live)
+    - done!
+[ ]    make it
+[ ]    prepare demo
+[ ] getting sgbm in python
+[ ] getting sgbm in depthmap_live.py
+[ ] opengl: 3D representation of image
+[ ] mindstorms
+[ ]    bluetooth connection
+[ ]    writing program to control robot
+
