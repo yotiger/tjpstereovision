@@ -1,6 +1,7 @@
 \documentclass{beamer}
 
 \usepackage{beamerthemesplit}
+\usepackage{pgf}
 
 \usetheme{Berkeley}
 \useinnertheme{circles}
@@ -64,6 +65,30 @@
   \begin{itemize}
     \item Multiple methods
   \end{itemize}
+}
+
+\frame{
+  \frametitle{Stereo Matching - A general overview}
+  \include{pgf7}
+  \begin{itemize}
+   \item Mapping of pixels
+   \item Disparity $\rightarrow$ Depth
+   \item Occlusion
+  \end{itemize}
+}
+
+\frame{
+  \frametitle{Stereo Matching - Depthmap}
+  \begin{figure} [h!tb]
+  \centering
+  \begin{minipage}[h]{.4\linewidth}
+  \includegraphics[width=\textwidth]{disp_tsukuba_orig}
+  \end{minipage}
+  \hspace{.1\linewidth}
+  \begin{minipage}[h]{.4\linewidth}
+  \include{pgf8}
+  \end{minipage}
+  \end{figure}
 }
 
 \end{document}
