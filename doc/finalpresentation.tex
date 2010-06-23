@@ -1,6 +1,7 @@
 \documentclass{beamer}
 
 \usepackage{beamerthemesplit}
+\usepackage{pgf}
 
 \usetheme{Berkeley}
 \useinnertheme{circles}
@@ -47,8 +48,7 @@
   \frametitle{Calibration}
   \begin{itemize}
     \item Retrieve spatial relation between cameras
-    \item [[PLAATJE 2 CAMS]]
-    \item Demo % TODO: aanpassen zodat je kleurtjes ziet
+    \item Demo
   \end{itemize}
 }
 
@@ -58,35 +58,38 @@
     \item Calculate rectification parameters
     \item Reusable
     \item Demo
-    \item [[PLAATJE 2 RECHTE CAMS]]
-    \item [[PLAATJE RODE LIJNEN]]
   \end{itemize}
 }
 
 \frame{
   \frametitle{Stereo correspondence}
   \begin{itemize}
-    \item Find corresponding pixels
     \item Multiple methods
   \end{itemize}
 }
 
-
-\section{Applications}
-
 \frame{
-  \frametitle{Remove Background}
+  \frametitle{Stereo Matching - A general overview}
+  \include{pgf7}
   \begin{itemize}
-    \item Threshold: webcam image or background image
-    \item Demo
+   \item Mapping of pixels
+   \item Disparity $\rightarrow$ Depth
+   \item Occlusion
   \end{itemize}
 }
 
 \frame{
-  \frametitle{3D Representation}
-  \begin{itemize}
-    \item Demo
-  \end{itemize}
+  \frametitle{Stereo Matching - Depthmap}
+  \begin{figure} [h!tb]
+  \centering
+  \begin{minipage}[h]{.4\linewidth}
+  \includegraphics[width=\textwidth]{disp_tsukuba_orig}
+  \end{minipage}
+  \hspace{.1\linewidth}
+  \begin{minipage}[h]{.4\linewidth}
+  \include{pgf8}
+  \end{minipage}
+  \end{figure}
 }
 
 \end{document}
