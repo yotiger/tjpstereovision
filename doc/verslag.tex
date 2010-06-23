@@ -223,40 +223,52 @@ vision}
 \label{occprob} 
 \end{figure}
 
-Another problem is occlusion of the pixels. Some things that are visible in one
-picture can be hidden behind objects in the other picture. This has to be caught
-and handled. Both examples in Figure \ref{occprob} show that the left point of
-the left eye is not visible from the right eye's view.
+Another problem is occlusion of the pixels. Some things that are
+visible in one picture can be hidden behind objects in the other
+picture. This has to be caught and handled. Both examples in Figure
+\ref{occprob} show that the left point of the left eye is not visible
+from the right eye's view.
 
-Because the OpenCV library that we have chosen has the basic implementation of a
-graph cut algorithm from Kolmogorov\cite{kolmogorov2003}, we will start with
-that specific algorithm. It is a bit slow and not the best algorithm to handle
-occlusion, but because it is easy to use we will at first use this algorithm and
-later replace it with an implementation of the block matching algorithms also
-provided by OpenCV. 
+Because the OpenCV library that we have chosen has the basic
+implementation of a graph cut algorithm from
+Kolmogorov\cite{kolmogorov2003}, we will start with that specific
+algorithm. It is a bit slow and not the best algorithm to handle
+occlusion, but because it is easy to use we will at first use this
+algorithm and later replace it with an implementation of the block
+matching algorithms also provided by OpenCV.
 
 \subsubsection{Graph Cut Theory}
 \label{gc_theory}
-Normal stereo matching algorithms try to match a pixel in the left image to a pixel in the right image based on some individual
-property like color. Although this is a fast and reasonably accurate process it does not deal with the interlinear consistency.
-The interlinear consistency forces you to also look at interpixel properties like neighbours and will result in a much more accurate desparity map.
-\\
-In order to maintain the interlinear consistency you want to connect the pixels that are adjacent within a line and add some
-sort of weight on that connection to make it expensive to break that connection. Furthermore you want to determine the disparities
-in the entire picture that disrupt those neighbouring relations as less as possible. [ref] states that given some energy function
-you can construct a graph where the labeling with the lowest energy is equal to the minimum cut on that graph. In that respect you can 
-look at the stereo correspondance problem as a labeling problem where you have to assign disparity labels.
-We will explain this in various sections below.\\\\
+Normal stereo matching algorithms try to match a pixel in the left
+image to a pixel in the right image based on some individual property
+like color. Although this is a fast and reasonably accurate process it
+does not deal with the interlinear consistency.  The interlinear
+consistency forces you to also look at interpixel properties like
+neighbours and will result in a much more accurate desparity map.  \\
+In order to maintain the interlinear consistency you want to connect
+the pixels that are adjacent within a line and add some sort of weight
+on that connection to make it expensive to break that
+connection. Furthermore you want to determine the disparities in the
+entire picture that disrupt those neighbouring relations as less as
+possible. [ref] states that given some energy function you can
+construct a graph where the labeling with the lowest energy is equal
+to the minimum cut on that graph. In that respect you can look at the
+stereo correspondance problem as a labeling problem where you have to
+assign disparity labels.  We will explain this in various sections
+below.\\\\
 \begin{figure}[t] \centering
 \includegraphics[width=180px]{Network_flow.png}
 \caption{flow network}
 \label{flow_network}
 \end{figure}
 \noindent\textbf{Graph theory: flow networks}:\indent\\
-Figure \ref{flow_network} shows a directed graph $\mathcal{G}$ which can be formaly defined as $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$.
-$\mathcal{V}$ depicts the set of vertices or nodes in the graph, whereas $\mathcal{E}$ depicts the set of edges between vertices.\\\\
+Figure \ref{flow_network} shows a directed graph $\mathcal{G}$ which
+can be formaly defined as $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$.
+$\mathcal{V}$ depicts the set of vertices or nodes in the graph,
+whereas $\mathcal{E}$ depicts the set
+of edges between vertices.\\\\
 \noindent\textbf{Graph theory applied to stereo vision}:\indent\\
-\begin{figure}[t]
+\begin{figure}[t!bt]
 \begin{enumerate}
  \item Create a graph $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$
  \item $\forall_{p \epsilon \mathcal{P}}$ add $p$ to $\mathcal{V}$
@@ -267,19 +279,22 @@ $\mathcal{V}$ depicts the set of vertices or nodes in the graph, whereas $\mathc
 \end{enumerate}
 \caption{Steps for constructing a graph from picture $\mathcal{P}$}
 \label{alg:gc_construct}
-\end{figure}
-Figure \ref{alg:gc_construct} describes the process of constructing a graph $\mathcal{G}$ as discussed in the previous section
- from a picture $\mathcal{P}$. $\mathcal{N}$ depicts a set of horizontally adjacent pixel pairs.\\\\
+\end{figure}[h!bt]
+Figure \ref{alg:gc_construct} describes the process of constructing a
+graph $\mathcal{G}$ as discussed in the previous section from a
+picture $\mathcal{P}$. $\mathcal{N}$ depicts a set of horizontally
+adjacent pixel pairs.\\\\
 \noindent\textbf{Weights}:\indent\\
 \begin{equation}
  E(f) = E_{data}(f) + E_{smooth}(f) + E_{occ}(f)
 \end{equation}
-When two adjacent pixels have similair intensities it is likely that they are part of the same object, this means
-that during the labeling of disparities you would \emph{prefer} to assign the same label to both pixels.
-The weights in $\mathcal{G}$ encode this information, the higher the weight value the less you want to break the pixels apart.
- 
-
-\begin{figure}[t]
+When two adjacent pixels have similair intensities it is likely that
+they are part of the same object, this means that during the labeling
+of disparities you would \emph{prefer} to assign the same label to
+both pixels.  The weights in $\mathcal{G}$ encode this information,
+the higher the weight value the less you want to break the pixels
+apart.
+\begin{figure}[h!bt]
 \centering
 \caption{Picture $\mathcal{P}$}
 \begin{minipage}[h]{.4\linewidth}
@@ -300,12 +315,12 @@ The weights in $\mathcal{G}$ encode this information, the higher the weight valu
  \forall p \epsilon \mathcal{P}
 \end{equation}
 
-\begin{figure}[t]
+\begin{figure}[h!bt]
 \centering
 \include{pgf6}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[h!bt]
 \centering
 \include{pgf3}
 \include{pgf4}

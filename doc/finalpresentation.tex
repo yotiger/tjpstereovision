@@ -96,18 +96,61 @@
   \end{figure}
 }
 
-\frame{
-  \frametitle{Stereo Algorithms - Block Matching}
-  
-}
 
-\frame{
-  \frametitle{Stereo Algorithms - SGBM}
-}
-
-\frame{
+\frame {
   \frametitle{Stereo Algorithms - Graph Cut}
+      \begin{itemize}
+      \item popular
+      \item slow
+      \item smooth
+      \end{itemize}
+      \begin{figure}
+      \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
+      \:
+      \includegraphics[width=0.4\textwidth]{gc_tsukuba_own}
+      \end{figure}
 }
+
+
+\frame {
+  \frametitle{Stereo Algorithms - Block Matching}
+    \begin{itemize}
+      \item fast
+      \item lots of noise
+    \end{itemize}
+    \begin{figure}
+    \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
+    \:
+    \includegraphics[width=0.4\textwidth]{bm_tsukuba_own}
+    \end{figure}
+
+}
+
+\frame{
+    \frametitle{Stereo Algorithms - Semi Global Block Matching}
+    \begin{itemize}
+      \item not in Python
+      \item good in speed/quality
+      \item good depthmap
+      \item noise
+    \end{itemize}
+    \begin{figure}
+    \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
+    \:
+    \includegraphics[width=0.4\textwidth]{sgbm_tsukuba_own}
+    \end{figure}
+}
+
+
+\frame{
+  \frametitle{DEMO}
+  Now follows a demonstration of
+  \begin{itemize}
+  \item SGBM
+  \item GC
+  \end{itemize}
+}
+
 
 \section{Applications}
 

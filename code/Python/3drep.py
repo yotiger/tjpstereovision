@@ -4,6 +4,10 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import math
 import cv
+from OpenGL.GL.ARB.vertex_buffer_object import *
+from VertexBuffer import *
+import numpy
+
 
 #some colors
 colRed= (1, 0, 0)
@@ -19,8 +23,20 @@ colBlack = (0, 0, 0)
 CameraPos = [0.0, 20.0, 20.0]
 lp = [0.0, 0.0]
 pos = []
-pos2 = GLuint()
+vert = None
 color = []
+
+
+def BuildVBOs (m_pVertices):
+    """ // Generate And Bind The Vertex Buffer """
+    m_nVBOVertices = int(glGenBuffersARB( 1));						# // Get A Valid Name
+    glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nVBOVertices );	# // Bind The Buffer
+			# // Load The Data
+    glBufferDataARB( GL_ARRAY_BUFFER_ARB, m_pVertices, GL_STATIC_DRAW_ARB );
+
+
+
+
 
 def initGL():
     mat_emission = (0.7, 0.7, 0.7, 0.0)
@@ -59,11 +75,11 @@ def display():
 #    glutBitmapCharacter( GLUT_BITMAP_8_BY_13, ord('a'))
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-
+    
     glFrustum(-1.0, +1.0, -1.0, 1.0, 5.0, 60.0)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    gluLookAt(CameraPos[0],CameraPos[1],CameraPos[2],0,0,0,0,1,0)
+    gluLookAt(CameraPos[0],CameraPos[1],CameraPos[2],2,2,0,0,-1,0)
     glPushMatrix()
 
 #    glMatrixMode(GL_MODELVIEW)
@@ -122,7 +138,6 @@ def draw_stuff():
     global pos, pos2
     #coordinateSystem(5,5,5)
     #glPushMatrix()
-
     
     # glBegin(GL_POINTS)
     # for i in pos:
@@ -200,31 +215,25 @@ def passiveFunc( *args ):
 
 def img2depth(im):
     scale = 0.01
-    global pos, pos2, color
+    global pos, vert, color
     img = cv.LoadImageM(im, cv.CV_LOAD_IMAGE_GRAYSCALE)
-    #img = cv.CreateMat(im2.rows, im2.cols, scale*cv.CV_32F)
-    #cv.Convert(im2, img)
 
-#    glGenBuffers(1)
-
+    vert = numpy.zeros ((img.cols*img.rows, 3), 'f')
+    index = 0
     
+
     print "Image loaded"
     for i in range(0, img.cols, 5):
         for j in range(0, img.rows, 5):
-#            print img[j,i] * scal
-#            colArr = 
-            pos += [[i*scale, j*scale, img[j,i]*scale]]
- #           pos2 += [[i*scale, j*scale, img[j,i]*scale]]
- #           color += [(1.0, 0.0, img[j,i]*scale)]
-    print "succeeded in setting over images in vertices"
-    
-#    glGenBuffers(1)
-#    glBindBuffer( GL_ARRAY_BUFFER, 1 )
-#    glBufferData( GL_ARRAY_BUFFER, pos2, GL_STATIC_DRAW )
+             pos += [[i*scale, j*scale, img[j,i]*scale]]
+             vert [index, 0] = i*scale
+             vert [index, 1] = j*scale
+             vert [index, 2] = img[j,i]*scale
+             index += 1
 
-    # glGenBuffers(1, color)
-    # glBindBuffer( GL_ARRAY_BUFFER, 1 )
-    # glBufferData( GL_ARRAY_BUFFER, None, color, GL_STATIC_DRAW )
+    #BuildVBOs(vert)
+    print "succeeded in setting over images in vertices"
+
     
 
 if __name__ == "__main__":
@@ -233,9 +242,7 @@ if __name__ == "__main__":
     newArgv = glutInit(sys.argv)
     print 'newArguments', newArgv
 
-
     #create the depth vertex array
-    img2depth(newArgv[1])
     print "image ", newArgv[1], "loaded"
 
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB )
@@ -243,6 +250,8 @@ if __name__ == "__main__":
     glutInitWindowPosition(100, 100)
     window = glutCreateWindow("hello")
     print 'window', repr(window)
+    img2depth(newArgv[1])
+
 
 
     glutDisplayFunc(display)
