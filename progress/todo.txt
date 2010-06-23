@@ -29,7 +29,7 @@
 [ ]    prepare demo
 [ ] getting sgbm in python
 [ ] getting sgbm in depthmap_live.py
-[ ] opengl: 3D representation of image
+[x] opengl: 3D representation of image
 [ ] mindstorms
 [ ]    bluetooth connection
 [ ]    writing program to control robot

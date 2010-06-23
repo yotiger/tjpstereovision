@@ -42,10 +42,10 @@ def writeChessboards(cap1, cap2, n1, n2, n=8, fname="chessboards.txt"):
     cv.ShowImage(n2, f2)
 
     k = cv.WaitKey(10)
-    if k == 0x1b:
+    if k == 0x1b: # esc
       print "ESC pressed. Exiting. WARNING: NOT ENOUGH CHESSBOARDS FOUND YET"
       break
-    if k == 0x20:
+    if k == 0x20 or k == 0x73: # space or s (show)
       cor1 = cv.FindChessboardCorners(f1, (10, 7))
       cor2 = cv.FindChessboardCorners(f2, (10, 7))
 
@@ -53,11 +53,20 @@ def writeChessboards(cap1, cap2, n1, n2, n=8, fname="chessboards.txt"):
         print "Chessboard not found. Try again."
         continue
       
+      # write to file
       for i in range(0, len(cor1[1])):
         f.write("{0} {1}\n".format(cor1[1][i][0], cor1[1][i][1]))
         f.write("{0} {1}\n".format(cor2[1][i][0], cor2[1][i][1]))
 
       count += 1
+
+      # show chessboard if user pressed 's'
+      if k == 0x73:
+        cv.DrawChessboardCorners(f1, (10,7), cor1[1], 1)
+        cv.DrawChessboardCorners(f2, (10,7), cor2[1], 1)
+        cv.ShowImage(n1, f1)
+        cv.ShowImage(n2, f2)
+        cv.WaitKey(2000) # wait some time
 
       if count == n:
         print "Found {0} chessboards. Exiting.".format(n)
@@ -66,6 +75,8 @@ def writeChessboards(cap1, cap2, n1, n2, n=8, fname="chessboards.txt"):
         
       f.write("---\n")
       print "Found and wrote chessboard."
+
+
 
 if __name__ == "__main__":
   (c1, c2) = genCamWindows("Camera 1", "Camera 2")
