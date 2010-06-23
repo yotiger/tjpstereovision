@@ -1,0 +1,26 @@
+% Latex pgf picture
+% Shows 5 pixels: {p,q,r,s,t}
+% With bgcolors : {w,w,g,b,g}
+\begin{pgfpicture}
+\color{gray}
+\pgfrect[fill]{\pgfxy(5,1)}{\pgfxy(1,1)}
+\color{black}
+\pgfrect[fill]{\pgfxy(4,1)}{\pgfxy(1,1)}
+\color{gray}
+\pgfrect[fill]{\pgfxy(3,1)}{\pgfxy(1,1)}
+\color{black}
+
+\pgfrect[stroke]{\pgfxy(5,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(4,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(3,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(2,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(1,1)}{\pgfxy(1,1)}
+
+\pgfputat{\pgfxy(0.5,1.5)}{\pgfbox[center,center]{$\mathcal{P} =$}}
+
+\pgfputat{\pgfxy(1.5,1.5)}{\pgfbox[center,center]{P}}
+\pgfputat{\pgfxy(2.5,1.5)}{\pgfbox[center,center]{Q}}
+\pgfputat{\pgfxy(3.5,1.5)}{\pgfbox[center,center]{R}}
+\pgfputat{\pgfxy(4.5,1.5)}{\pgfbox[center,center]{\textcolor{white}{S}}}
+\pgfputat{\pgfxy(5.5,1.5)}{\pgfbox[center,center]{T}}
+\end{pgfpicture}
