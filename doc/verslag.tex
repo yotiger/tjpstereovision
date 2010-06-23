@@ -6,6 +6,7 @@
 \setlength{\footskip}{1cm}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{pgf}
 %\usepackage{listings}
 \usepackage{amsmath}
 
@@ -33,7 +34,7 @@ Veen} \date{June 2010}
 Stereo vision is one of the key subjects in the computer vision
 research. Stereo vision can be best described as taking two viewpoints
 in a 3D world, comparing the distance between the position of an
-object in both images and relating that to the distance of an object
+object in both images and relating that to the distance of the object
 to the camera. Such information is retrieved by a dense stereo
 algorithm of which the output is often a disparity depth map. A
 disparity depth map is a 2D image where the color of each pixel is
@@ -41,7 +42,7 @@ directly linked to the distance of the pixel on that coordinate in the
 original image, in other words if an object is white it is depending
 on the implementation nearer or further away than a darker object. Our
 goal is to generate such a depth map from two images taken with two
-web cams.
+webcams.
 
 Depthmaps are interesting because they can be used for various
 purposes:
@@ -72,58 +73,89 @@ We will have to get acquainted with the library OpenCV. See section
 
 \section{Theory}
 
-\subsection{Epipolar geometry}
-\label{epipolar}
+\subsection{Camera calibration}
+When working with stereo vision we need to know the spatial relation
+between the two cameras, and we need to get rid of radial distortion due to
+the imperfections of the lens. Using the algorithm proposed by Zhang
+\cite{zhang1999} we can automate this process by showing both cameras
+different orientations of a chessboard. A simple contrastbased algorithm
+can recognize the black-white intersections of the chessboard squares. The
+chessboard used can be of any size N by M. This way for each chessboard we
+show we have $N*M$ points we know for both cameras. Using the disparities of
+these points between both cameras, we can calculate a rotation/translation
+matrix which transforms the coordinate system of the left camera to the
+coordinate system of the right camera, or the other way around.
+
+We have chosen not to describe the algorithm fully here. See the article by
+Zhang for more information \cite{zhang1999}.
+
+\subsection{Epipolar geometry and rectification}
+\label{recttheory}
+\emph{Epipolar geometry} is used in stereo vision to limit the searching space
+when looking for matching points in both images. A point $X$ in 3D space is seen
+in image $A$, which we will call the source image, as a point $x$, which is on
+the line between camera $A$'s focal point and point $X$. This line is seen on
+image $B$, which we will call the search image, as a line. This is called an
+\emph{epipolar line}. Given both the cameras internal and external matrices and
+a point $x_A$ we can generate an epipolar line corresponding to this point in
+the search image. This constrains the search space to this 1D line. However,
+this means that for each pixel in the source image, we have to calculate the
+corresponding epipolar line in the search image. It would be much more
+convenient if each epipolar line was on the same line as the pixel it
+corresponded to. It is possible to transform the images in such a way that the
+epipolar lines are parallel and horizontal, and the process is called
+rectification.
+
+Figure \ref{fig:rectepipole} demonstrates the process of rectification.  The
+points called $E_{1}$ and $E_{2}$ are called the \emph{epipolar points} of both
+images. All epipolar lines intersect the epipolar point of a given image.
+However, when the retinal planes of both cameras lie on the same plane, the
+epipolar points move to infinity and the epipolar lines in one image become
+parallel to one another. The line between the optical centers of both retinal
+planes is called the baseline. When the epipolar points lie at infinity, we can
+see that the epipolar lines are parallel to this baseline. That means that if
+the baseline is parallel to the X-axis, the epipolar lines are horizontal.
 
 \begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{Epipolar_geometry}
-  \caption{All points $X_{1}, X_{2}, \cdots, X_{L}$ lie on the same
-epipolar line in the right view}
-  \label{fig:epipole}
-\end{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{nonrectepipole}
+$\rightarrow$
+\includegraphics[width=0.4\textwidth]{rectepipole}
+\caption{Left: unrectified cameras, right: rectified cameras. After
+rectification, the epipolar lines are colinear and horizontal}
+\label{fig:rectepipole} \end{figure}
 
-Epipolar geometry is used in stereo vision to limit the searching
-space when looking for matching points in both images. A point $X$ in
-3D space is seen in image $A$ as a point $x$, which is on the line
-between camera $A$'s focal point and point $X$. This line is seen by
-camera $B$ as a line. This is called an \emph{epipolar line}. Given
-both the cameras internal and external matrices and a point $x_A$ we
-can generate an epipolar line corresponding to this point in image
-$B$. This constrains the search space to this 1D line.
+\subsubsection{Algorithm}
+We will give the basic gist of the rectification algorithm here. 
 
-The points called $e_{L}$ and $e_{R}$ in figure \ref{fig:epipole} are
-called the \emph{epipolar points} of both images. Epipolar lines
-rotate around the epipolar point of a given image.
+\begin{enumerate}
+  \item First both camera matrices are separately factorized into three parts:
+  \begin{itemize}
+    \item The internal camera matrix $A_o$
+    \item The rotational matrix $R_o$ that gives the rotation between the camera's
+    frame of reference and the world frame of reference
+    \item The translation matrix $t_o$ that gives the translation between the
+    camera's frame of reference and the world frame of reference
+  \end{itemize}
+  This means $P_o = A_o[R_o\ |\ t_o]$
+  \item The new rotational matrix $R_n$ is constructed. This matrix makes
+  sure that in the new `cameras' reference systems, the x-axis is parallel
+  to the baseline. The baseline is simply the line between the two optical
+  centers, which can be retrieved from $P_o$.
+  \item The new internal camera matrix $A$ is constructed. This can be
+  chosen arbitrarily and in this algorithm the mean between both original
+  inner camera matrices ($A_{o1}, A{o2}$) is used.
+  \item The new camera matrices are now $P_{n1} = A[R\ |\ -R c_1]$ and
+  $P_{n2}
+  = A[R\ |\ -R c_2]$. The optical centers are unchanged.
+  \item A mapping is created that maps the original image planes of $P_{o1},
+  P_{o2}$ to the new $P_{n1}, P_{n2}$. Because in general the pixels in the new
+  images don't correspond to integer positions in the old images, bilinear
+  interpolation is used to fill up the gaps.
+\end{enumerate}
 
-For more information on epipolar geometry, see \cite{Hartley2004}.
-
-\subsection{Rectification}
-\label{rectification} As we have seen in section \ref{epipolar}, we
-can constrain the search space to a 1D line. However due to the nature
-computers store images, it would be very convenient if these epipolar
-lines were parallel to the horizontal scan-lines.  This is done by a
-process called \emph{rectification}. This process transforms both
-images so that the epipolar lines of the images align
-horizontally. For this, we need a matrix that relates the two
-cameras. This matrix is called the \emph{fundamental matrix} or
-\emph{bifocal tensor} and is denoted by the symbol $F$.
-
-\subsubsection{Fundamental matrix} Given a point $x$ in image $A$,
-$Fx$ describes the epipolar line in image $B$ on which the
-corresponding point $x'$ must lie. This means that $F$ has to satisfy
-the equation
-\[ x'^{T}Fx = 0 \] for all corresponding points $x$ and $x'$. Given
-enough corresponding points, we can solve this equation linearly. The
-more points available, the more accurate this fundamental matrix
-becomes.\footnote{That is, if the corresponding points are accurate as
-well.}
-
-\subsubsection{Chessboard points} The corresponding points necessary
-for generating the fundamental matrix is obtained by making multiple
-pictures of a chessboard in the environment. The OpenCV toolkit has a
-built-in function to recognize the corners of a chessboard.  In this
-project we will not elaborate on that subject.
+For a complete and in depth description of each step, please see
+\cite{fusiello2000}.
 
 \subsection{Dense Stereo} 
 Dense stereo combines the two images you get from the rectification
@@ -191,24 +223,97 @@ vision}
 \label{occprob} 
 \end{figure}
 
-Another problem is occlusion of the pixels. Some things that are
-visible in one picture can be hidden behind objects in the other
-picture. This has to be caught and handled. Both examples in Figure \ref{occprob}
-show that the left point of the left eye is not visible from the right
-eye's view.
+Another problem is occlusion of the pixels. Some things that are visible in one
+picture can be hidden behind objects in the other picture. This has to be caught
+and handled. Both examples in Figure \ref{occprob} show that the left point of
+the left eye is not visible from the right eye's view.
 
-Because the OpenCV library that we have chosen has the basic
-implementation of a graph cut algorithm from
-Kolmogorov\cite{kolmogorov2003}, we will start with that specific
-algorithm. It is a bit slow and not the best algorithm to handle
-occlusion, but because it is easy to use we will at first use this
-algorithm and later replace it with an implementation of the block
-matching algorithms also provided by OpenCV. 
+Because the OpenCV library that we have chosen has the basic implementation of a
+graph cut algorithm from Kolmogorov\cite{kolmogorov2003}, we will start with
+that specific algorithm. It is a bit slow and not the best algorithm to handle
+occlusion, but because it is easy to use we will at first use this algorithm and
+later replace it with an implementation of the block matching algorithms also
+provided by OpenCV. 
 
 \subsubsection{Graph Cut Theory}
 \label{gc_theory}
-In the following version of the paper we will explain how the graph
-cut algorithm works.
+Normal stereo matching algorithms try to match a pixel in the left image to a pixel in the right image based on some individual
+property like color. Although this is a fast and reasonably accurate process it does not deal with the interlinear consistency.
+The interlinear consistency forces you to also look at interpixel properties like neighbours and will result in a much more accurate desparity map.
+\\
+In order to maintain the interlinear consistency you want to connect the pixels that are adjacent within a line and add some
+sort of weight on that connection to make it expensive to break that connection. Furthermore you want to determine the disparities
+in the entire picture that disrupt those neighbouring relations as less as possible. [ref] states that given some energy function
+you can construct a graph where the labeling with the lowest energy is equal to the minimum cut on that graph. In that respect you can 
+look at the stereo correspondance problem as a labeling problem where you have to assign disparity labels.
+We will explain this in various sections below.\\\\
+\begin{figure}[t] \centering
+\includegraphics[width=180px]{Network_flow.png}
+\caption{flow network}
+\label{flow_network}
+\end{figure}
+\noindent\textbf{Graph theory: flow networks}:\indent\\
+Figure \ref{flow_network} shows a directed graph $\mathcal{G}$ which can be formaly defined as $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$.
+$\mathcal{V}$ depicts the set of vertices or nodes in the graph, whereas $\mathcal{E}$ depicts the set of edges between vertices.\\\\
+\noindent\textbf{Graph theory applied to stereo vision}:\indent\\
+\begin{figure}[t]
+\begin{enumerate}
+ \item Create a graph $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$
+ \item $\forall_{p \epsilon \mathcal{P}}$ add $p$ to $\mathcal{V}$
+ \item add terminals $f^0$ and $f^a$ to $\mathcal{G}$
+ \item $\forall_{p,q \epsilon \mathcal{N}}$ add \{$p$,$q$\} to $\mathcal{E}$
+ \item $\forall_{p \epsilon \mathcal{V}}$ add $\{f^0,p\}$ and $\{f^a,p\}$ to $\mathcal{E}$
+ \item $\forall_{\{p,q\} \epsilon \mathcal{E}}$ set weight $w$ for $\{p,q\}$
+\end{enumerate}
+\caption{Steps for constructing a graph from picture $\mathcal{P}$}
+\label{alg:gc_construct}
+\end{figure}
+Figure \ref{alg:gc_construct} describes the process of constructing a graph $\mathcal{G}$ as discussed in the previous section
+ from a picture $\mathcal{P}$. $\mathcal{N}$ depicts a set of horizontally adjacent pixel pairs.\\\\
+\noindent\textbf{Weights}:\indent\\
+\begin{equation}
+ E(f) = E_{data}(f) + E_{smooth}(f) + E_{occ}(f)
+\end{equation}
+When two adjacent pixels have similair intensities it is likely that they are part of the same object, this means
+that during the labeling of disparities you would \emph{prefer} to assign the same label to both pixels.
+The weights in $\mathcal{G}$ encode this information, the higher the weight value the less you want to break the pixels apart.
+ 
+
+\begin{figure}[t]
+\centering
+\caption{Picture $\mathcal{P}$}
+\begin{minipage}[h]{.4\linewidth}
+\include{pgf1}
+\end{minipage}
+\hspace{.1\linewidth}
+\begin{minipage}[h]{.4\linewidth}
+\include{pgf2}
+\end{minipage}
+\end{figure}
+\begin{equation}
+ f_{p}^{C} = \left\{
+  \begin{array}{lll}
+  \alpha & \text{if} & t^{\alpha}_{p} \epsilon \mathcal{C} \\ 
+  f_{p}  & \text{if} & t^{\alpha}_{p} \epsilon \mathcal{C}
+  \end{array}
+\right.
+ \forall p \epsilon \mathcal{P}
+\end{equation}
+
+\begin{figure}[t]
+\centering
+\include{pgf6}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\include{pgf3}
+\include{pgf4}
+\caption{Graph-Cut step 1 with $f^\alpha = 1$}
+\include{pgf5}
+\include{pgf2}
+\caption{Graph-Cut step 2 with $f^\alpha = 2$}
+\end{figure}
 
 \subsubsection{Semi Global Block Matching Theory}
 Semi global block matching is build on the idea that you use mean data
@@ -413,33 +518,6 @@ correct for lens distortion) and a translation/rotation matrix
 relating the first camera to the second. This output is used by the
 rectification algorithm explained below.
 
-\subsection{Rectification} Using the calibration parameters generated,
-the rectification algorithm can transform the images so that the
-epipolar geometry in both images is co-linear and horizontal. This
-constrains the correspondence problem to one horizontal line per
-pixel.\footnote{As we will see later, constraining to just one line of
-pixels is not optimal because of noise}
-
-There are two different kind of rectification algorithms implemented
-in OpenCV. One uses calibration parameters and another one does the
-same trick with no calibration, but this generates much less precise
-results. We have chosen for the calibrated method. The uncalibrated
-algorithm used by OpenCV is by Hartley (see \cite{Hartley99}).
-
-The rectification algorithm outputs two matrices that govern the
-homogeneous transformations necessary to rectify the left and right
-images. Once these matrices are calculated, as long as the cameras
-don't move in relation to each other, they can be reused.
-
-The final step concerning rectification is calculating a map that maps
-pixels in the new rectified image to pixels in the old
-image.\footnote{The other way around would not generate a satisfying
-result, as there is no guarantee that a pixel in the original will
-fall on exactly a pixel in the new image, so interpolation is
-necessary} This map is then used to remap the original images to the
-rectified images using the OpenCV function Remap. A set of images with
-their rectified counterparts is seen in Figure \ref{unrectified} and
-\ref{rectified}. 
 
 \begin{figure}[h] \centering
   \includegraphics[width=0.4\textwidth]{leftown}
@@ -452,6 +530,10 @@ their rectified counterparts is seen in Figure \ref{unrectified} and
   \caption{Rectified images}
   \label{rectified}
 \end{figure} \newpage
+
+\subsection{Rectification}
+The algorithm used for rectification in OpenCV is exactly as we have
+explained in the theory section (\ref{recttheory}).
 
 \subsection{Dense Stereo Algorithms}
 During our project we first started with using the standard algorithms
