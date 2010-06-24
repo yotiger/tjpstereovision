@@ -1,0 +1,26 @@
+% PGF Latex Image
+% Shows two images with pixels {A,B,C,D,E,F,G,H} with disparity and occlusion.
+\definecolor{light-gray}{gray}{0.75}
+\definecolor{dark-gray}{gray}{0.35}
+\begin{pgfpicture}
+
+\color{black}
+\pgfrect[fill]{\pgfxy(0,0)}{\pgfxy(.5,.5)}
+\color{dark-gray}
+\pgfrect[fill]{\pgfxy(0,.5)}{\pgfxy(.5,.5)}
+\color{gray}
+\pgfrect[fill]{\pgfxy(0,1)}{\pgfxy(.5,.5)}
+\color{light-gray}
+\pgfrect[fill]{\pgfxy(0,1.5)}{\pgfxy(.5,.5)}
+\color{black}
+\pgfrect[stroke]{\pgfxy(0,2)}{\pgfxy(.5,.5)}
+\pgfrect[stroke]{\pgfxy(0,1.5)}{\pgfxy(.5,.5)}
+\pgfrect[stroke]{\pgfxy(0,1)}{\pgfxy(.5,.5)}
+\pgfrect[stroke]{\pgfxy(0,.5)}{\pgfxy(.5,.5)}
+\pgfrect[stroke]{\pgfxy(0,0)}{\pgfxy(.5,.5)}
+\pgfputat{\pgfxy(1.2,0.2)}{\pgfbox[center,center]{Invalid}}
+\pgfputat{\pgfxy(1.35,0.73)}{\pgfbox[center,center]{Very Far}}
+\pgfputat{\pgfxy(0.90,1.25)}{\pgfbox[center,center]{Far}}
+\pgfputat{\pgfxy(1.2,1.70)}{\pgfbox[center,center]{Nearby}}
+\pgfputat{\pgfxy(1.2,2.25)}{\pgfbox[center,center]{Closest}}
+\end{pgfpicture}
