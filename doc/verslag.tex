@@ -176,8 +176,8 @@ example depth map with original image.
 \label{dm_example}
 \end{figure}
 
-To achieve this you have a whole list of algorithms that do the
-trick.\footnote{A good overview can be found at
+To achieve this, a whole list of algorithms that do the
+trick is available.\footnote{A good overview can be found at
 http://vision.middlebury.edu/stereo/eval/}\\
 Most of these algorithms are based on 4 principles:
 \begin{itemize}
@@ -193,7 +193,6 @@ calculations
     \item Occlusion
 \end{itemize}
 
-
 \subsubsection{Matching}
 \begin{figure} [h!tb]
 \centering
@@ -204,7 +203,7 @@ calculations
 \label{dirprob}
 \end{figure}
 
-The main goal of such an algorithm is of matching one point in one
+The main goal of such an algorithm is matching one point in one
 image to the corresponding point in the other image. During the
 matching there are several tasks that the algorithm has to perform. At
 first it has to compare the epipolar lines of the images pixel by
@@ -213,7 +212,7 @@ the corresponding epipolar line in the other image. Often the pixels
 aren't in the same order, for example if there is a lamp pole in front
 of a house, things that lie on the left side of the lamp pole in the
 left picture could sit on the right side in the right picture. See
-Figure \ref{dirprob}.
+figure \ref{dirprob}.
 
 \begin{figure} [h!tb]
 \centering
@@ -223,15 +222,15 @@ vision}
 \label{occprob} 
 \end{figure}
 
-Another problem is occlusion of the pixels. Some things that are
+Another problem is occlusion of pixels. Some things that are
 visible in one picture can be hidden behind objects in the other
-picture. This has to be caught and handled. Both examples in Figure
-\ref{occprob} show that the left point of the left eye is not visible
-from the right eye's view.
+picture. This has to be caught and handled. Both examples in figure
+\ref{occprob} show that the leftmost pixel of the left cam is not visible
+in the right cam view.
 
 Because the OpenCV library that we have chosen has the basic
 implementation of a graph cut algorithm from
-Kolmogorov\cite{kolmogorov2003}, we will start with that specific
+Kolmogorov \cite{kolmogorov2003}, we will start with that specific
 algorithm. It is a bit slow and not the best algorithm to handle
 occlusion, but because it is easy to use we will at first use this
 algorithm and later replace it with an implementation of the block
@@ -249,16 +248,17 @@ In order to maintain the interlinear consistency you want to connect
 the pixels that are adjacent within a line and add some sort of weight
 on that connection to make it expensive to break that
 connection. Furthermore you want to determine the disparities in the
-entire picture that disrupt those neighbouring relations as less as
+entire picture that disrupt those neighbouring relations as little as
 possible. [ref] states that given some energy function you can
 construct a graph where the labeling with the lowest energy is equal
 to the minimum cut on that graph. In that respect you can look at the
 stereo correspondance problem as a labeling problem where you have to
 assign disparity labels.  We will explain this in various sections
-below.\\\\
+below.
+
 \begin{figure}[t] \centering
 \includegraphics[width=180px]{Network_flow.png}
-\caption{flow network}
+\caption{Flow network}
 \label{flow_network}
 \end{figure}
 \noindent\textbf{Graph theory: flow networks}:\indent\\
@@ -331,7 +331,7 @@ apart.
 \end{figure}
 
 \subsubsection{Semi Global Block Matching Theory}
-Semi global block matching is build on the idea that you use mean data
+Semi global block matching is built on the idea that you use mean data
 from blocks of pixels as pixel energy and then build up a cost array
 over the costs of all disparities from the minimum disparity to the
 maximum disparity for all the pixels. Afterwards a search is done for
@@ -558,9 +558,10 @@ that are already implemented in OpenCV. These algorithms are namely:
 \item Block Matching
 \item Semi Global Block Matching
 \end{itemize}
-To test these algorithms we used the dataset from Middlebury
-\cite{middlebury}, which is a good set with rectified images and their
-belonging depth map, calculated with Graph Cut.
+To test these algorithms we used the Tsukuba dataset from Middlebury
+\cite{middlebury}.  This set with rectified images and their corresponding depth
+maps is the industry standard for testing and comparing different methods of
+stereo correspondence.
 
 \subsubsection{Graph Cut}
 The graph cut algorithm is one of the most popular algorithms in the
@@ -569,20 +570,22 @@ algorithms return better results qua speed and depth recognition. We
 used the standard implementation in OpenCV which is written by use of
 the Kolmogorov paper from 2003\cite{kolmogorov2003}. Our first results
 almost reach the quality of the depth map provided by the Middlebury
-homepage\cite{middlebury}. See Figure \ref{gc_comp}. In the final
-version we will explain how it works in the theory part. %\ref{gc_theory}
+homepage\cite{middlebury}. See figure \ref{gc_comp}.
+Section \ref{gc_theory} talks about the theory behind graph cut.
 
 \begin{figure} [h!tb]
   \centering
   \includegraphics[width=0.4\textwidth]{gc_tsukuba_own}
   \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
-  \caption{left: Our GC depthmap, right: Middlebury Ground Truth}
+  \caption{left: Our GC depthmap, right: Middlebury Ground Truth. Gray values
+  convey depth, lighter gray is closer to the camera. Black values are
+  ``invalid'', that is using the algorithm no valid depth can }
   \label{gc_comp}
 \end{figure}
 
 \subsubsection{Block Matching}
 The Block Matching algorithm is much faster than the Graph Cut
-Algorithm, but the quality of the results till now are not as good.
+Algorithm, but the quality of the results until now are not as good.
 There are more possibilities to fine-tune the algorithm with pre and
 post filters which have huge impact on the quality and we still have
 to find the right configuration to get the best results. See Figure
