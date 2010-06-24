@@ -1,5 +1,5 @@
 \documentclass[a4paper]{article} 
-\usepackage[noheadfoot,margin=2cm,a4paper]{geometry} 
+\usepackage[noheadfoot,margin=2.5cm,a4paper]{geometry} 
 \usepackage{amsmath, amsthm}
 % \addtolength{\textheight}{20mm}
 % \addtolength{\voffset}{-5mm}
@@ -31,18 +31,15 @@ Veen} \date{June 2010}
 \newpage
 
 \section{Preface} 
-Stereo vision is one of the key subjects in the computer vision
+Stereo vision is one of the key subjects in computer vision
 research. Stereo vision can be best described as taking two viewpoints
 in a 3D world, comparing the distance between the position of an
 object in both images and relating that to the distance of the object
 to the camera. Such information is retrieved by a dense stereo
 algorithm of which the output is often a disparity depth map. A
-disparity depth map is a 2D image where the color of each pixel is
-directly linked to the distance of the pixel on that coordinate in the
-original image, in other words if an object is white it is depending
-on the implementation nearer or further away than a darker object. Our
-goal is to generate such a depth map from two images taken with two
-webcams.
+disparity depth map is a 2D image where the color of each pixel represents 
+the distance of that point to the camera. In other words, light pixels are near
+and dark pixels are far.
 
 Depthmaps are interesting because they can be used for various
 purposes:
@@ -60,16 +57,6 @@ front of the scene.
  \item[As information about the environment in path planning] A
 depthmap supplies additional information for path planning.
 \end{description}
-
-\section{Practical problems}
-
-\subsection{Webcams} 
-We will have to make the two webcams work on Linux. Ideally we would
-have a live feed from both webcams at all times.
-
-\subsection{OpenCV} 
-We will have to get acquainted with the library OpenCV. See section
-\ref{opencv}.
 
 \section{Theory}
 
@@ -89,25 +76,32 @@ coordinate system of the right camera, or the other way around.
 We have chosen not to describe the algorithm fully here. See the article by
 Zhang for more information \cite{zhang1999}.
 
+\begin{figure}[h!bt]
+  \centering
+  \includegraphics[width=0.4\textwidth]{epistandard}
+  \caption{Epipolar geometry}
+  \label{epi}
+\end{figure}
+
 \subsection{Epipolar geometry and rectification}
 \label{recttheory}
-\emph{Epipolar geometry} is used in stereo vision to limit the searching space
-when looking for matching points in both images. A point $X$ in 3D space is seen
-in image $A$, which we will call the source image, as a point $x$, which is on
-the line between camera $A$'s focal point and point $X$. This line is seen on
-image $B$, which we will call the search image, as a line. This is called an
-\emph{epipolar line}. Given both the cameras internal and external matrices and
-a point $x_A$ we can generate an epipolar line corresponding to this point in
-the search image. This constrains the search space to this 1D line. However,
-this means that for each pixel in the source image, we have to calculate the
-corresponding epipolar line in the search image. It would be much more
-convenient if each epipolar line was on the same line as the pixel it
-corresponded to. It is possible to transform the images in such a way that the
-epipolar lines are parallel and horizontal, and the process is called
-rectification.
+\emph{Epipolar geometry} (figure \ref{epi}) is used in stereo vision to limit
+the searching space when looking for matching points in both images. A point $X$
+in 3D space is seen in the left view, which we will call the source image, as a
+point $x$, which is on the line between the left camera's focal point $O_L$ and
+point $X$.  This line is seen in the right view, which we will call the search
+image, as a line. This is called an \emph{epipolar line}. Given both the cameras
+internal and external matrices and a point $x_A$ we can generate an epipolar
+line corresponding to this point in the search image. This constrains the search
+space to this 1D line. However, this means that for each pixel in the source
+image, we have to calculate the corresponding epipolar line in the search image.
+It would be much more convenient if each epipolar line was on the same line as
+the pixel it corresponded to. It is possible to transform the images in such a
+way that the epipolar lines are parallel and horizontal, and that process is
+called rectification.
 
 Figure \ref{fig:rectepipole} demonstrates the process of rectification.  The
-points called $E_{1}$ and $E_{2}$ are called the \emph{epipolar points} of both
+points $E_{1}$ and $E_{2}$ are called the \emph{epipolar points} of both
 images. All epipolar lines intersect the epipolar point of a given image.
 However, when the retinal planes of both cameras lie on the same plane, the
 epipolar points move to infinity and the epipolar lines in one image become
@@ -121,8 +115,12 @@ the baseline is parallel to the X-axis, the epipolar lines are horizontal.
 \includegraphics[width=0.4\textwidth]{nonrectepipole}
 $\rightarrow$
 \includegraphics[width=0.4\textwidth]{rectepipole}
-\caption{Left: unrectified cameras, right: rectified cameras. After
-rectification, the epipolar lines are colinear and horizontal}
+\caption{Left: unrectified cameras, right: rectified cameras. W represents the
+point in 3D space, $C_1$ and $C_2$ represent the camera focal points, $M_1$ and
+$M_2$ are the projections of $W$ on the retinal planes of the cameras and $R_1$
+and $R_2$ are the retinal planes of the cameras. In the left image, the points
+$E_1$ and $E_2$ represent the epipolar points of both images. In the right view,
+these points lie at infinity. After rectification, the epipolar lines are colinear and horizontal}
 \label{fig:rectepipole} \end{figure}
 
 \subsubsection{Algorithm}
@@ -158,15 +156,16 @@ For a complete and in depth description of each step, please see
 \cite{fusiello2000}.
 
 \subsection{Dense Stereo} 
-Dense stereo combines the two images you get from the rectification
-and calculates the position of the pixels in the left image and
-outputs where the pixel is located in the right image. With this
-method we calculate the pixel's distance from the camera.  The depth
-is then translated to a depth map where points closer to the camera
-are almost white whereas points further away are almost black. Points
-in between are shown in gray-scale, which get darker the further away
-the point gets from the camera. See Figure \ref{dm_example} for an
-example depth map with original image.
+Dense stereo combines the two images you get from the rectification process and
+takes the position of the pixels in the left image to output the corresponding
+pixel location in the right image. With this method we calculate the pixel's
+distance from the camera.  The depth is then translated to a depth map where
+points closer to the camera are almost white whereas points further away are
+almost black. Points in between are shown in gray-scale, which get darker the
+further away the point gets from the camera. See Figure \ref{dm_example} for an
+example depth map with the original image. To achieve this, a whole list of
+algorithms that do the trick is available.\footnote{A good overview can be found
+at http://vision.middlebury.edu/stereo/eval/}
 
 \begin{figure} \centering
 \includegraphics[width=0.3\textwidth]{depthmap}
@@ -176,9 +175,6 @@ example depth map with original image.
 \label{dm_example}
 \end{figure}
 
-To achieve this, a whole list of algorithms that do the
-trick is available.\footnote{A good overview can be found at
-http://vision.middlebury.edu/stereo/eval/}\\
 Most of these algorithms are based on 4 principles:
 \begin{itemize}
 \item Graph Cut
@@ -203,7 +199,8 @@ calculations
 \label{dirprob}
 \end{figure}
 
-The main goal of such an algorithm is matching one point in one
+% TODO SANDER: General disparity verhaal
+The main goal of a dense stereo algorithm is matching one point in one
 image to the corresponding point in the other image. During the
 matching there are several tasks that the algorithm has to perform. At
 first it has to compare the epipolar lines of the images pixel by
@@ -222,39 +219,32 @@ vision}
 \label{occprob} 
 \end{figure}
 
-Another problem is occlusion of pixels. Some things that are
-visible in one picture can be hidden behind objects in the other
-picture. This has to be caught and handled. Both examples in figure
-\ref{occprob} show that the leftmost pixel of the left cam is not visible
-in the right cam view.
+Another problem is occlusion of pixels. As we can see in figure \ref{occprob},
+in both examples pixel $P_O$ is visible for camera $O_L$, but is occluded in the
+view of camera $O_R$. This has to be caught and handled. 
 
-Because the OpenCV library that we have chosen has the basic
-implementation of a graph cut algorithm from
-Kolmogorov \cite{kolmogorov2003}, we will start with that specific
-algorithm. It is a bit slow and not the best algorithm to handle
-occlusion, but because it is easy to use we will at first use this
-algorithm and later replace it with an implementation of the block
-matching algorithms also provided by OpenCV.
+Because the OpenCV library that we have chosen has the basic implementation of a
+graph cut algorithm from Kolmogorov \cite{kolmogorov2003}, we will start with
+that specific algorithm. It is quite slow, but because it is easy to use we will
+start with this algorithm and later replace it with an implementation of block
+matching also provided by OpenCV.
 
 \subsubsection{Graph Cut Theory}
 \label{gc_theory}
-Normal stereo matching algorithms try to match a pixel in the left
-image to a pixel in the right image based on some individual property
-like color. Although this is a fast and reasonably accurate process it
-does not deal with the interlinear consistency.  The interlinear
-consistency forces you to also look at interpixel properties like
-neighbours and will result in a much more accurate desparity map.  \\
-In order to maintain the interlinear consistency you want to connect
-the pixels that are adjacent within a line and add some sort of weight
-on that connection to make it expensive to break that
-connection. Furthermore you want to determine the disparities in the
-entire picture that disrupt those neighbouring relations as little as
-possible. [ref] states that given some energy function you can
-construct a graph where the labeling with the lowest energy is equal
-to the minimum cut on that graph. In that respect you can look at the
-stereo correspondance problem as a labeling problem where you have to
-assign disparity labels.  We will explain this in various sections
-below.
+Normal stereo matching algorithms try to match a pixel in the left image to a
+pixel in the right image based on some individual property like color. Although
+this is a fast and reasonably accurate process it does not deal with interlinear
+consistency. An algorithm that incorporates interlinear consistency takes in
+account the interpixel properties like adjacency. This results in a much more
+accurate disparity depth map.  In order to maintain interlinear consistency you
+want to connect horizontally adjacent pixels and add some sort of weight on that
+connection to make it expensive to break. Furthermore you want to determine the
+disparities in the entire picture that disrupt those neighbouring relations as
+little as possible. \cite{kolmogorov2003} states that given some energy function
+you can construct a graph where the labeling with the lowest energy is equal to
+the minimum cut on that graph. In that respect you can look at the stereo
+correspondence problem as a labeling problem where you have to assign disparity
+labels.  We will explain this in various sections below.\\\\
 
 \begin{figure}[t] \centering
 \includegraphics[width=180px]{Network_flow.png}
@@ -279,7 +269,7 @@ of edges between vertices.\\\\
 \end{enumerate}
 \caption{Steps for constructing a graph from picture $\mathcal{P}$}
 \label{alg:gc_construct}
-\end{figure}[h!bt]
+\end{figure}
 Figure \ref{alg:gc_construct} describes the process of constructing a
 graph $\mathcal{G}$ as discussed in the previous section from a
 picture $\mathcal{P}$. $\mathcal{N}$ depicts a set of horizontally
@@ -329,6 +319,11 @@ apart.
 \include{pgf2}
 \caption{Graph-Cut step 2 with $f^\alpha = 2$}
 \end{figure}
+
+%TODOSANDER
+For a more in depth description of the graph cut algorithm, see
+[REFNAARANDERGRAPHCUTPAPER]. For more details on the implementation in OpenCV,
+see \ref{kolmogorov2003}.
 
 \subsubsection{Semi Global Block Matching Theory}
 Semi global block matching is built on the idea that you use mean data
@@ -491,11 +486,11 @@ on, which enforces one on one pixel mappings.
 
 \subsection{OpenCV}
 \label{opencv} OpenCV is a library of programming functions for real
-time computer vision. By ussing this library we can constrain our tasks
+time computer vision. By using this library we can constrain our tasks
 to integrating various parts of OpenCV and expanding it where
 possible. If we would not use OpenCV, we would not have enough time to
-achieve our goal. OpenCV is a C library but has python binding which
-we will use to decrease the risk of programming errors.
+achieve our goal. OpenCV is a C library but has Python bindings which
+we used to decrease the risk of programming errors.
 
 \subsection{Calibration}
 \label{calib_implement} OpenCV has a separate function for calibrating
@@ -531,7 +526,7 @@ intersection lies at $(0, 0, 0)$ in the real world.
 camera matrices, a set of distortion coefficients for both cameras (to
 correct for lens distortion) and a translation/rotation matrix
 relating the first camera to the second. This output is used by the
-rectification algorithm explained below.
+rectification algorithm explained in section \ref{recttheory}.
 
 
 \begin{figure}[h] \centering
@@ -551,8 +546,9 @@ The algorithm used for rectification in OpenCV is exactly as we have
 explained in the theory section (\ref{recttheory}).
 
 \subsection{Dense Stereo Algorithms}
-During our project we first started with using the standard algorithms
-that are already implemented in OpenCV. These algorithms are namely:
+During our project we first started with using the standard algorithms that are
+already implemented in OpenCV. As we have discussed previously, these algorithms
+are:
 \begin{itemize}
 \item Graph Cut
 \item Block Matching
@@ -565,9 +561,8 @@ stereo correspondence.
 
 \subsubsection{Graph Cut}
 The graph cut algorithm is one of the most popular algorithms in the
-stereo vision depth map generation. It is quite slow though and new
-algorithms return better results qua speed and depth recognition. We
-used the standard implementation in OpenCV which is written by use of
+generation of disparity depth maps. We
+used the standard implementation in OpenCV which is an adaptation of
 the Kolmogorov paper from 2003\cite{kolmogorov2003}. Our first results
 almost reach the quality of the depth map provided by the Middlebury
 homepage\cite{middlebury}. See figure \ref{gc_comp}.
@@ -579,28 +574,22 @@ Section \ref{gc_theory} talks about the theory behind graph cut.
   \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
   \caption{left: Our GC depthmap, right: Middlebury Ground Truth. Gray values
   convey depth, lighter gray is closer to the camera. Black values are
-  ``invalid'', that is using the algorithm no valid depth can }
+  ``invalid'', meaning that using the algorithm no valid depthvalue could be
+  calculated}
   \label{gc_comp}
-\end{figure}
-
-\subsubsection{Block Matching}
-The Block Matching algorithm is much faster than the Graph Cut
-Algorithm, but the quality of the results until now are not as good.
-There are more possibilities to fine-tune the algorithm with pre and
-post filters which have huge impact on the quality and we still have
-to find the right configuration to get the best results. See Figure
-\ref{bm_comp} for comparison with the Graph Cut algorithm from
-Middlebury. We couldn't find any good block matching example to
-compare with but with the graph cut you will get the idea of how it
-has to divide the image into different depths.
-
-\begin{figure} [h!tb]
-  \centering
   \includegraphics[width=0.4\textwidth]{bm_tsukuba_own}
   \includegraphics[width=0.4\textwidth]{disp_tsukuba_orig}
   \caption{left: Our BM depthmap, right: Middlebury Ground Truth}
   \label{bm_comp}
 \end{figure}
+
+\subsubsection{Block Matching} The Block Matching algorithm is much faster than
+the Graph Cut Algorithm, but the quality of the results is not as good.  The
+quality of the algorithm depends greatly on the configuration of the parameters
+and the use of pre- and postfilters. See Figure \ref{bm_comp} for comparison
+with the Graph Cut algorithm from Middlebury. We couldn't find any good block
+matching example to compare with but with the graph cut you will get the idea of
+how it has to divide the image into different depths.
 
 \subsubsection{Semi Global Block Matching}
 The Semi Global Block Matching algorithm is quite new in the OpenCV
@@ -612,7 +601,8 @@ this we wrote this part in C++. Just as the standard Block Matching
 the algorithm still needs to be tuned right to return the optimal
 depthmap. See Figure \ref{sgbm_comp} for comparison with the GC
 algorithm. The tuning of the algorithm was one of the most important
-steps to get good results. The options you could tune were: 
+steps to get good results. The parameters are:
+
 \begin{itemize}
 \item min and max disparity
 \item SAD size
@@ -630,8 +620,8 @@ returned the best results\\
 \emph{SAD size} is the size of the blocks which is considered for the
 Energy calculation of the algorithm. The manual suggests values
 between 5 and 21 pixels. The value has to be an uneven value. We chose
-for a size of 9 to keep the calculation faster and we didn't get much
-better results with higher values.\\
+a size of 9 to keep the calculation as fast as possible without too much loss of
+quality.\\
 \textbf{PreFilterCap} is the value for the Tomasi cost function to cap
 the values at [-PreFilterCap, PreFilterCap] intervals. In the OpenCV
 implementation the values given can vary between 0 and 63. We chose
@@ -647,11 +637,9 @@ considered as speckle / peak. In our configuration we set the value to
 change that much. OpenCV suggests a value between 50-200.\\
 \textbf{speckleRange} defines the disparity difference that is
 considered as speckle. This has to be a value devidable by 16 and the
-OpenCV manual suggests 16 or 32. With a value of 32 we had good
-results so we kept that.\\
+OpenCV manual suggests 16 or 32. A value of 32 gave good results.\\
 \textbf{Original} at last defines if you want to use 5 or 8 paths for
-the cost aggregation. We used the original suggested 8 paths so we
-turned on the boolean.
+the cost aggregation. We have chosen the suggested 8 paths configuration.
 
 \begin{figure} [h!tb]
   \centering
@@ -661,8 +649,34 @@ turned on the boolean.
   \label{sgbm_comp}
 \end{figure}
 
+\section{Practical problems}
+
+\subsection{Webcams} 
+We had to make the two webcams work on Linux. We had to compile our own drivers
+in order to receive a live feed from both cameras at the same time.
+
+\subsection{OpenCV} 
+We were completely unfamiliar with the library OpenCV, which we have used for
+all of our calculations. First off, it took us quite a while to get it working
+on various systems. The library is written in C, but because we used Python
+bindings, it was quite hard to debug errors thrown by the library functions.
+
+Furthermore, in order to be able to use the SGBM functionality implemented in
+the latest release of OpenCV, we had to compile our own build of the library. As
+of yet, there are no binary packages available for this release. See section \ref{opencv}
+for a more in depth description of OpenCV.
+
+\section{Applications}
+%TODO
+
+\section{Discussion}
+%TODO
+
+\newpage
 
 \section{Planning}
+This was our original planning from which we did not have to deviate greatly.
+
 \begin{itemize}
   \item Week 1
     \begin{itemize}
@@ -700,20 +714,6 @@ turned on the boolean.
         \end{itemize}
     \end{itemize}
 \end{itemize}
-
-\section{Tasks}
-  \begin{itemize}
-    \item Martijn and Moos
-    \begin{itemize}
-      \item Camera calibration
-      \item Epipolar geometry
-    \end{itemize}
-    \item Sander and Sebastian
-    \begin{itemize}
-      \item Finding corresponding points
-      \item Generating depth map
-    \end{itemize}
-  \end{itemize}
 
 \bibliographystyle{plain} \bibliography{verslag}
 \end{document}
