@@ -167,7 +167,6 @@ are almost white whereas points further away are almost black. Points
 in between are shown in gray-scale, which get darker the further away
 the point gets from the camera. See Figure \ref{dm_example} for an
 example depth map with original image.
-
 \begin{figure} \centering
 \includegraphics[width=0.3\textwidth]{depthmap}
 \includegraphics[width=0.3\textwidth]{depthmap_original}
@@ -175,7 +174,6 @@ example depth map with original image.
   the depth of the image}
 \label{dm_example}
 \end{figure}
-
 To achieve this you have a whole list of algorithms that do the
 trick.\footnote{A good overview can be found at
 http://vision.middlebury.edu/stereo/eval/}\\
@@ -186,13 +184,18 @@ Most of these algorithms are based on 4 principles:
 \item Region Based / Block Matching
 \item Dynamic Programming
 \end{itemize}
-These algorithms have to deal with the following problems in their
-calculations
+These algorithms have to deal with the some problems in their
+calculations. The main task of dense stereo algorithms is to find the
+corresponding pixels in the match image starting from pixels in the
+base image. While doing this the algorithms have to keep track of
+occluded pixels, pixels that are found in one of the two images but
+not in the other.
+The algorithms we are trying to implement and use are namely:
 \begin{itemize}
-    \item Matching points in both images
-    \item Occlusion
+\item Graph Cut
+\item Block Matching
+\item Semi Global Block Matching
 \end{itemize}
-
 
 \subsubsection{Matching}
 \begin{figure} [h!tb]
@@ -232,10 +235,16 @@ from the right eye's view.
 Because the OpenCV library that we have chosen has the basic
 implementation of a graph cut algorithm from
 Kolmogorov\cite{kolmogorov2003}, we will start with that specific
-algorithm. It is a bit slow and not the best algorithm to handle
-occlusion, but because it is easy to use we will at first use this
-algorithm and later replace it with an implementation of the block
-matching algorithms also provided by OpenCV.
+algorithm. It is not the best algorithm for thi task but because of
+his general usability and publicity it is a good algorithm to start
+with. Furthermore we will test the implementations of the
+standard block matching algorithm, which is faster but not that
+precise. Also we will test a quite new implementation of the sub
+global block matching algorithm, which was recently implemented in OpenCV.
+% It is a bit slow and not the best algorithm to handle
+% occlusion, but because it is easy to use we will at first use this
+% algorithm and later replace it with an implementation of the block
+% matching algorithms also provided by OpenCV.
 
 \subsubsection{Graph Cut Theory}
 \label{gc_theory}
@@ -268,7 +277,7 @@ $\mathcal{V}$ depicts the set of vertices or nodes in the graph,
 whereas $\mathcal{E}$ depicts the set
 of edges between vertices.\\\\
 \noindent\textbf{Graph theory applied to stereo vision}:\indent\\
-\begin{figure}[t!bt]
+\begin{figure}[h!bt]
 \begin{enumerate}
  \item Create a graph $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$
  \item $\forall_{p \epsilon \mathcal{P}}$ add $p$ to $\mathcal{V}$
@@ -279,7 +288,7 @@ of edges between vertices.\\\\
 \end{enumerate}
 \caption{Steps for constructing a graph from picture $\mathcal{P}$}
 \label{alg:gc_construct}
-\end{figure}[h!bt]
+\end{figure}
 Figure \ref{alg:gc_construct} describes the process of constructing a
 graph $\mathcal{G}$ as discussed in the previous section from a
 picture $\mathcal{P}$. $\mathcal{N}$ depicts a set of horizontally
@@ -288,10 +297,10 @@ adjacent pixel pairs.\\\\
 \begin{equation}
  E(f) = E_{data}(f) + E_{smooth}(f) + E_{occ}(f)
 \end{equation}
-When two adjacent pixels have similair intensities it is likely that
+When two adjacent pixels have similar intensities it is likely that
 they are part of the same object, this means that during the labeling
 of disparities you would \emph{prefer} to assign the same label to
-both pixels.  The weights in $\mathcal{G}$ encode this information,
+both pixels. The weights in $\mathcal{G}$ encode this information,
 the higher the weight value the less you want to break the pixels
 apart.
 \begin{figure}[h!bt]
@@ -325,6 +334,9 @@ apart.
 \include{pgf3}
 \include{pgf4}
 \caption{Graph-Cut step 1 with $f^\alpha = 1$}
+\end{figure}
+\begin{figure}[h!bt]
+\centering
 \include{pgf5}
 \include{pgf2}
 \caption{Graph-Cut step 2 with $f^\alpha = 2$}
@@ -366,7 +378,7 @@ disparity map. This is done via peak filtering, intensity consistent
 disparity selection and gap interpolation. Also multibaseline matching
 is done through the fusion of disparities to circumvent streaking and
 add consistency. Because refinement is a separate part and has nothing
-to do with stereovision per se, we leave it out in the explanation\\
+to do with stereovision per se, we leave it out in the explanation.\\
 
 \emph{\textbf{Cost Calculation}}:\\
 % the costs of this algorithm is caluclated from the intensity of the
@@ -381,12 +393,17 @@ The \emph{matching cost} for the blocks of pixels used for calculating
 the disparity in the OpenCV implementation are calculated through the
 implementation of the subpixel algorithm described in the paper of
 Birchfeld and Tomasi: "Depth Discontinuities by Pixel-to-Pixel Stereo"
-\cite{birchtom99}. The size of the area has influence on the
+\cite{birchtom99}. This is done by finding the correspondence
+$I_{m\mathbf{q}}$ of the matching image from the mean intensity of a
+block of pixels $I_{b\mathbf{p}}$ in the base image with the formula
+$\mathbf{q} = \mathcal{e}_{bm}(\mathbf{p}, d)$ where
+$\mathcal{e}_{bm}(\mathbf{p}, d)$ represents the epipolar line for
+$\mathbf{p}$ in $I_b$. The size of the area has influence on the
 robustness of the disparity map. Larger areas are more robust but fine
 structures get more blurred, because of the assumption of the same
 disparity over the whole area which isn't always true. The disparity
 cost $C_{BT}( \mathbf{p},d)$ is calculated for a chosen squareblock of
-pixels $\mathbf{p}$ from $minX$ till $maxX$, the limits of the block,
+pixels $\mathbf{p}$ from $minX$ till $maxX$ (the limits of the block),
 where $d$ represents the current disparity in the rectified images and
 $x$ is the pixel in the current block. \eqref{eq:costcalc} This is
 done over all disparities between the given minimum and maximum
@@ -434,7 +451,8 @@ Because 2D energy minimization would be a NP-complete problem, 1D
 Computation is used which can be calculated in polynomial time. To
 cover the equally important information of different directions of the
 image, 1D lines from '\textit{all}' directions which end in the
-pixelblock are considered.\ref{fig:directions}
+pixelblock you are searching the disparity for, are considered (see
+Figure \ref{fig:directions})
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{directions}
@@ -467,7 +485,6 @@ saved in an equally sized array $S$.
   \\
   \displaystyle\min\limits_{\mathit{i}} L_{r}(\mathbf{p} - \mathbf{r}, \mathit{i}) +
   P_2) -
-  \notag\\
   \displaystyle\min\limits_{\mathit{k}} L_{r}(\mathbf{p} -
   \mathbf{r}, \mathit{k})\notag
 \end{align}
@@ -490,9 +507,9 @@ on, which enforces one on one pixel mappings.
 \section{Implementation}
 
 \subsection{OpenCV}
-\label{opencv} OpenCV is a library of programming functions for real
-time computer vision. By ussing this library we can constrain our tasks
-to integrating various parts of OpenCV and expanding it where
+\label{opencv} OpenCV is a library of programming functions for
+computer vision. By ussing this library we can constrain our tasks to
+integrating various parts of OpenCV and expanding it where
 possible. If we would not use OpenCV, we would not have enough time to
 achieve our goal. OpenCV is a C library but has python binding which
 we will use to decrease the risk of programming errors.
@@ -551,13 +568,10 @@ The algorithm used for rectification in OpenCV is exactly as we have
 explained in the theory section (\ref{recttheory}).
 
 \subsection{Dense Stereo Algorithms}
-During our project we first started with using the standard algorithms
-that are already implemented in OpenCV. These algorithms are namely:
-\begin{itemize}
-\item Graph Cut
-\item Block Matching
-\item Semi Global Block Matching
-\end{itemize}
+During our project we use the standard algorithms
+that are already implemented in OpenCV. As described in the theory
+part of the paper (see \ref{theory})we used three algorithms, graph
+cut, block matching and semi global block matching. 
 To test these algorithms we used the dataset from Middlebury
 \cite{middlebury}, which is a good set with rectified images and their
 belonging depth map, calculated with Graph Cut.
@@ -566,11 +580,10 @@ belonging depth map, calculated with Graph Cut.
 The graph cut algorithm is one of the most popular algorithms in the
 stereo vision depth map generation. It is quite slow though and new
 algorithms return better results qua speed and depth recognition. We
-used the standard implementation in OpenCV which is written by use of
-the Kolmogorov paper from 2003\cite{kolmogorov2003}. Our first results
-almost reach the quality of the depth map provided by the Middlebury
-homepage\cite{middlebury}. See Figure \ref{gc_comp}. In the final
-version we will explain how it works in the theory part. %\ref{gc_theory}
+used the standard implementation in OpenCV which is described in
+the Kolmogorov paper\cite{kolmogorov2003}. Our first results
+almost reach the quality of the ground truth depth map provided by the Middlebury
+homepage\cite{middlebury}. See Figure \ref{gc_comp}.
 
 \begin{figure} [h!tb]
   \centering
@@ -582,13 +595,13 @@ version we will explain how it works in the theory part. %\ref{gc_theory}
 
 \subsubsection{Block Matching}
 The Block Matching algorithm is much faster than the Graph Cut
-Algorithm, but the quality of the results till now are not as good.
+Algorithm, but the quality of the results are not as good.
 There are more possibilities to fine-tune the algorithm with pre and
 post filters which have huge impact on the quality and we still have
 to find the right configuration to get the best results. See Figure
-\ref{bm_comp} for comparison with the Graph Cut algorithm from
+\ref{bm_comp} for comparison with the ground truth from
 Middlebury. We couldn't find any good block matching example to
-compare with but with the graph cut you will get the idea of how it
+compare with but with the ground truth you will get the idea of how it
 has to divide the image into different depths.
 
 \begin{figure} [h!tb]
@@ -603,13 +616,13 @@ has to divide the image into different depths.
 The Semi Global Block Matching algorithm is quite new in the OpenCV
 library. It was implemented in version 2.1 which is the current
 version at the time this article is written. It is more precise and
-faster than the standard block matching algorithm but the python
+almost as fast as the standard block matching algorithm but the python
 binding is not yet completed and integrated into OpenCV. Because of
 this we wrote this part in C++. Just as the standard Block Matching
 the algorithm still needs to be tuned right to return the optimal
-depthmap. See Figure \ref{sgbm_comp} for comparison with the GC
-algorithm. The tuning of the algorithm was one of the most important
-steps to get good results. The options you could tune were: 
+depthmap. See Figure \ref{sgbm_comp} for comparison with the ground
+truth. The tuning of the algorithm is one of the most important
+steps to get good results. The options that are tuneable are: 
 \begin{itemize}
 \item min and max disparity
 \item SAD size
@@ -619,12 +632,12 @@ steps to get good results. The options you could tune were:
 \item speckleWindowSize and speckleRange
 \item Original
 \end{itemize}
-\noindent\emph{min and max disparity} are the minimum and maximum disparity
+\noindent\textbf{min and max disparity} are the minimum and maximum disparity
 values that can be found. Between these the best one is chosen for the
 disparity image. In our implementation we set the minimum disparity to
 0 and the maximum disparity we chose the image width/8, because it
 returned the best results\\
-\emph{SAD size} is the size of the blocks which is considered for the
+\textbf{SAD size} is the size of the blocks which is considered for the
 Energy calculation of the algorithm. The manual suggests values
 between 5 and 21 pixels. The value has to be an uneven value. We chose
 for a size of 9 to keep the calculation faster and we didn't get much
