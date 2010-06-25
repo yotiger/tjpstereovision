@@ -6,29 +6,20 @@
    [x] finding chessboard points
    [x] calibrating: finding cam matrices
    [x] rectifying images
-[ ] making smooth demo interface
-
-[ ] documenting code
+[x] making smooth demo interface
+[x] documenting code
 [ ] report
 [x]    stereocalibration
 [x]    rectification
-[ ]    bm
-[ ]    sgbm
-[ ]    graphcut
+[x]    bm
+[x]    sgbm
+[x]    graphcut
 [ ]    finishing touch
-[ ] presentation
-    laten zien:
-    - calibratie
-    - rectificatie (live)
-    - blockmatching (live)
-    - sgblockmatching (live)
-    - graphcut (live geschoten plaatje)
-    - graphcut + bm op eigen dataset (niet live)
-    - done!
-[ ]    make it
-[ ]    prepare demo
+[x] presentation
+[x]    make it
+[x]    prepare demo
 [ ] getting sgbm in python
-[ ] getting sgbm in depthmap_live.py
+[x] getting sgbm in depthmap_live.py
 [x] opengl: 3D representation of image
 [ ] mindstorms
 [ ]    bluetooth connection
