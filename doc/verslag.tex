@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article} 
+\documentclass[a4paper]{article}
 \usepackage[noheadfoot,margin=2.5cm,a4paper]{geometry} 
 \usepackage{amsmath, amsthm}
 % \addtolength{\textheight}{20mm}
@@ -309,7 +309,7 @@ accurate disparity depth map.  In order to maintain interlinear consistency you
 want to connect horizontally adjacent pixels and add some sort of weight on that
 connection to make it expensive to break. Furthermore you want to determine the
 disparities in the entire picture that disrupt those neighbouring relations as
-little as possible. \cite{kolmogorov2003} states that given some energy function
+little as possible. \cite{zabih2001} states that given some energy function
 you can construct a graph where the labeling with the lowest energy is equal to
 the minimum cut on that graph. In that respect you can look at the stereo
 correspondence problem as a labeling problem where you have to assign disparity
@@ -320,12 +320,17 @@ labels.  We will explain this in various sections below.\\\\
 \caption{Flow network}
 \label{flow_network}
 \end{figure}
-\noindent\textbf{Graph theory: flow networks}:\indent\\
+\noindent\textbf{Graph theory: Flow network basics}:\indent\\
 Figure \ref{flow_network} shows a directed graph $\mathcal{G}$ which
 can be formaly defined as $\mathcal{G} = \{\mathcal{V},\mathcal{E}\}$.
 $\mathcal{V}$ depicts the set of vertices or nodes in the graph,
 whereas $\mathcal{E}$ depicts the set
-of edges between vertices.\\\\
+of edges between vertices. There are two special nodes S and T which are terminals.
+Node S is a source terminal, which means that the incoming capacity is lower
+than the outgoing capacity. Node T is a sink terminal, which has a higher incoming capacity than outgoing capacity.
+The incoming and outgoing capacities of a node are distributed over the connected edges.
+A \emph{graph cut} cuts edges in such a way that it disconnects the source from the sink, the cost of the cut equals the sum of the capacity of
+the cut edges.\\\\
 \noindent\textbf{Graph theory applied to stereo vision}:\indent\\
 \begin{figure}[h!bt]
 \begin{enumerate}
@@ -341,18 +346,26 @@ of edges between vertices.\\\\
 \end{figure}
 Figure \ref{alg:gc_construct} describes the process of constructing a
 graph $\mathcal{G}$ as discussed in the previous section from a
-picture $\mathcal{P}$. $\mathcal{N}$ depicts a set of horizontally
+picture $\mathcal{P}$ of which the result is showed in figure \ref{fig:gc_end_result}.
+The nodes represent pixels which can be reciprocally connected by edges.  $\mathcal{N}$ depicts a set of horizontally
 adjacent pixel pairs.\\\\
 \noindent\textbf{Weights}:\indent\\
 \begin{equation}
- E(f) = E_{data}(f) + E_{smooth}(f) + E_{occ}(f)
+ E(f) = E_{data}(f) + E_{smooth}(f) + E_{occlusion}(f)
+\label{eq:energy}
 \end{equation}
 When two adjacent pixels have similar intensities it is likely that
 they are part of the same object, this means that during the labeling
 of disparities you would \emph{prefer} to assign the same label to
-both pixels. The weights in $\mathcal{G}$ encode this information,
-the higher the weight value the less you want to break the pixels
-apart.
+both pixels. This value corresponds to the $E_{data}$ term in equation \ref{eq:energy}.
+$E_{smooth}$ measures the piecewise smoothness of the configuration and $E_{occlusion}$ 
+adds a penalty for occluded pixels in the configuration.
+The edge weights, such as $e(p,q)$ in figure \ref{fig:gc_end_result}, encode the energy function in such a way that it expresses
+the likeliness that two pixels are part of the same object. In other words the higher the weight value 
+the less you want to label the pixels with different disparities.\\
+Every node is also connected to labeling terminals $f^a$ and $f^0$. These edges, such as $t^{\alpha}_{p}$, contain weights that 
+express the costs of a pixel having that label. For more information on energy functions and weight values see \cite{zabih2001}.
+
 \begin{figure}[h!bt]
 \centering
 \caption{Picture $\mathcal{P}$}
@@ -377,6 +390,8 @@ apart.
 \begin{figure}[h!bt]
 \centering
 \include{pgf6}
+\caption{Graph of a 5-pixel image with weights and labels $f^a$ and $f^0$}
+\label{fig:gc_end_result}
 \end{figure}
 
 \begin{figure}[h!bt]
@@ -394,7 +409,7 @@ apart.
 
 %TODOSANDER
 For a more in depth description of the graph cut algorithm, see
-[REFNAARANDERGRAPHCUTPAPER]. For more details on the implementation in OpenCV,
+\cite{zabih2001}. For more details on the implementation in OpenCV,
 see \ref{kolmogorov2003}.
 
 \subsubsection{Semi Global Block Matching Theory}
