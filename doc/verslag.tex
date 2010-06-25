@@ -97,7 +97,7 @@ with a simple mathematical reprojection. The distortions can be
 characterized by a Taylor series of two terms for the lens shape and a
 reprojection for the skew image plane. For brevety, we omit the mathematical
 formulas and refer the interested reader to the OpenCV book
-\cite{learningopencv}.
+\cite{LearningOpenCV}.
 
 The (five) parameters needed to undo the distortion can be calculated if we
 could find a raster of points that lay on straight lines in the real world.
@@ -786,18 +786,24 @@ the cost aggregation. We have chosen the suggested 8 paths configuration.
 \subsection{Webcams} 
 We had to make the two webcams work on Linux. We had to compile our own drivers
 in order to receive a live feed from both cameras at the same time.
-Furthermore, because the webcams could not be moved relatively to each other after calibration, we created a rig in which both cameras were fixed.
+Furthermore, because the webcams could not be moved relatively to each other
+after calibration, we created a rig in which both cameras were fixed.
 
 \subsection{OpenCV} 
 We were completely unfamiliar with the library OpenCV, which we have used for
-all of our calculations. We were quite accustomed to MATLAB, so it took us a while to switch to programming linear algebra in OpenCV. First off, it took us a while to get it working
-on various systems. The library is written in C, but because we used Python
-bindings, it was quite hard to debug errors thrown by the library functions.
+all of our calculations. We were quite accustomed to MATLAB, so it took us a
+while to switch to programming linear algebra in OpenCV. First off, it took
+us a while to get it working on various systems. The library is written in C,
+but because we used Python bindings, it was quite hard to debug errors thrown
+by the library functions.
 
 Furthermore, in order to be able to use the SGBM functionality implemented in
 the latest release of OpenCV, we had to compile our own build of the library. As
 of yet, there are no binary packages available for this release. See section \ref{opencv}
 for a more in depth description of OpenCV.
+
+Besides of the OpenCV documentation, which documents each function with some comments on usage, the Learning OpenCV book \cite{LearningOpenCV} turned out to be a very useful source of information to get a good global idea of the possibilities of OpenCV in stereo vision.
+
 
 \section{Applications}
 
@@ -809,11 +815,24 @@ simple 3D representation of the original image. Figure \ref{3drep}
 shows screenshots of the 3D reconstruction of the Tsukuba dataset.
 
 \begin{figure}[h!bt]
+\centering
 \includegraphics[width=0.4\textwidth]{3drep1}
 \includegraphics[width=0.4\textwidth]{3drep2}
 \caption{A 3D representation of the Tsukuba dataset reconstructed from a
 disparity depth map}
 \label{3drep}
+\end{figure}
+
+\subsection{Remove background}
+If we know the distance between the camera and an object for each pixel,
+we can only show the pixels that are near enough according to some threshold
+distance. Using this technique we got black images with only the front objects 'cut out' of the original image. One could also replace the black background pixels with an alternative image to place front objects in alternative locations. We got a live background-removal program running which places people standing in front of the camera at a beach or at the Efteling. Besides some noise and occlusion problems, the images seems pretty good. See Figure \ref{remove-bg} for the result.
+
+\begin{figure}[h!bt]
+\centering
+\includegraphics[width=0.6\textwidth]{remove-bg1}
+\caption{Sander, Moos and Martijn on the beach in P1.24, Roeterseiland}
+\label{remove-bg}
 \end{figure}
 
 \section{Discussion}
