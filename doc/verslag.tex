@@ -824,9 +824,15 @@ disparity depth map}
 \end{figure}
 
 \subsection{Remove background}
-If we know the distance between the camera and an object for each pixel,
-we can only show the pixels that are near enough according to some threshold
-distance. Using this technique we got black images with only the front objects 'cut out' of the original image. One could also replace the black background pixels with an alternative image to place front objects in alternative locations. We got a live background-removal program running which places people standing in front of the camera at a beach or at the Efteling. Besides some noise and occlusion problems, the images seems pretty good. See Figure \ref{remove-bg} for the result.
+If we know the distance between the camera and an object for each pixel, we can
+only show the pixels that are near enough according to some threshold distance.
+Using this technique we got black images with only the front objects 'cut out'
+of the original image. One could also replace the black background pixels with
+an alternative image to place front objects in alternative locations. We got a
+live background-removal program running which places people standing in front of
+the camera at a beach or at the Efteling. Besides some noise and occlusion
+problems, the images seems pretty good. See Figure \ref{remove-bg} for the
+result.
 
 \begin{figure}[h!bt]
 \centering
@@ -835,12 +841,24 @@ distance. Using this technique we got black images with only the front objects '
 \label{remove-bg}
 \end{figure}
 
-\section{Discussion}
-During the month in which this project took place, we have spent quite a lot of
-time getting used to OpenCV. The library, although perfect for this kind of
-research, uses a lot of different datastructures for matrices and images alike.
-Figuring out which datastructure is necessary for what function and converting
-between those has taken up more time than we would have wanted.
+\section{Further research}
+
+\begin{description}
+  \item[Applying RANSAC] We could eliminate noise when generating the disparity
+  depth maps using RANSAC to reduce speckles.
+  \item[Implementing BP] The newer algorithms that generate better and faster
+  results all depend on Belief Propagation. It would be very nice to add this to
+  our options.
+  \item[Adjusting relative camera position] We would like to see what the effect
+  of the relative position of the two cameras to each other is on the results.
+  \item[Cube calibration] The OpenCV manual states that it is possible to
+  calibrate the cameras with just one view of a 3D cube which is guaranteed to
+  be straight in all directions. This would reduce the calibration steps to just
+  one.
+  \item[Automatic calibration] Using SIFT it is possible to calibrate without
+  the use of artificial objects and interaction with the user. This would
+  autonomize the program even more.
+\end{description}
 
 \newpage
 
