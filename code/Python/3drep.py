@@ -5,7 +5,6 @@ from OpenGL.GLUT import *
 import math
 import cv
 from OpenGL.GL.ARB.vertex_buffer_object import *
-from VertexBuffer import *
 import numpy
 
 
