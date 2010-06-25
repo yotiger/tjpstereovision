@@ -9,6 +9,17 @@ import os
 from stereoheader import *
 from stereo_bm_test import *
 
+
+def usage():
+  # usage message
+  print("Usage: " + sys.argv[0] + "[args]")
+  print(" Possible arguments:")
+  print("  --webcamviewer: show original images (don't do algoritms)")
+  print("  --rectify-only: show rectified images")
+  print("  --sgbm:         use sgbm instead of bm")
+  print("  --remove-bg:    show original image for front object pixels")
+
+# main program
 if __name__ == "__main__":
 
   CAM_LEFT  = 1
@@ -36,13 +47,12 @@ if __name__ == "__main__":
     elif sys.argv[i] == "--webcamviewer":
       algoritm = "none"
 
-  # usage message
-  print("Usage: " + sys.argv[0] + "[args]")
-  print(" Possible arguments:")
-  print("  --webcamviewer: show original images (don't do algoritms)")
-  print("  --rectify-only: show rectified images")
-  print("  --sgbm:         use sgbm instead of bm")
-  print("  --remove-bg:    show original image for front object pixels")
+    elif sys.argv[i] == "--help" or sys.argv[i] == "-h":
+      usage()
+      exit()
+    else:
+      print("Unknown command: " + sys.argv[i])
+      exit()
 
 
   # init vars
