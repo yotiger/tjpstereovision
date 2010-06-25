@@ -32,14 +32,15 @@ if __name__ == '__main__':
     disparity_left_visual = cv.CreateMat(l.rows, l.cols, cv.CV_8U)
     cv.ConvertScale(disparity_left, disparity_left_visual, -16)
 
+    cv.SaveImage("disparity.jpg", disparity_left_visual)
+
     print "starting 3D representation, loading values..."
     dispmat = cv.CreateMat(disparity_left_visual.rows, disparity_left_visual.cols, cv.CV_16SC1)
     cv.Convert(disparity_left_visual, dispmat)
     
-    threedimg = cv.CreateMat(dispmat.rows, dispmat.cols, cv.CV_16SC3)
-    (R1, R2, P1, P2, Q) = loadRectif("../../dataset/owndataset1/rect")
-    print "values loaded, reprojecting..."
-    cv.ReprojectImageTo3D(dispmat, threedimg, Q)
-    cv.SaveImage("3dimg.jpg", threedimg)
+    #threedimg = cv.CreateMat(dispmat.rows, dispmat.cols, cv.CV_16SC3)
+    #(R1, R2, P1, P2, Q) = loadRectif("../../dataset/owndataset2/rect")
+    #print "values loaded, reprojecting..."
+    #cv.ReprojectImageTo3D(dispmat, threedimg, Q)
+    #cv.SaveImage("3dimg.jpg", threedimg)
     
-    cv.SaveImage("disparity.jpg", disparity_left_visual)
