@@ -800,7 +800,21 @@ of yet, there are no binary packages available for this release. See section \re
 for a more in depth description of OpenCV.
 
 \section{Applications}
-%TODO
+
+\subsection{3D representation}
+When taking a picture with a camera, the third dimension of depth is lost. With
+a disparity depth map it is possible to reconstruct this third dimension. We
+have created an OpenGL viewer that can convert a disparity depth map into a
+simple 3D representation of the original image. Figure \ref{3drep}
+shows screenshots of the 3D reconstruction of the Tsukuba dataset.
+
+\begin{figure}[h!bt]
+\includegraphics[width=0.4\textwidth]{3drep1}
+\includegraphics[width=0.4\textwidth]{3drep2}
+\caption{A 3D representation of the Tsukuba dataset reconstructed from a
+disparity depth map}
+\label{3drep}
+\end{figure}
 
 \section{Discussion}
 %TODO
