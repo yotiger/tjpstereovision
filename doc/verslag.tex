@@ -387,7 +387,7 @@ the next iteration which shows a correct configuration.\\\\
 %TODOSANDER
 For a more in depth description of the graph cut algorithm, see
 \cite{zabih2001}. For more details on the implementation in OpenCV,
-see \ref{kolmogorov2003}.
+see \cite{kolmogorov2003}.
 
 \begin{figure}[h!bt]
 \centering
@@ -429,7 +429,7 @@ see \ref{kolmogorov2003}.
 \begin{figure}[h!bt]
 \centering
 \include{pgf5}
-\include{pgf2}
+\include{pgf9}
 \caption{Graph-Cut step 2 with $f^\alpha = 2$}
 \label{fig:gcstep2}
 \end{figure}
@@ -488,8 +488,8 @@ Birchfeld and Tomasi: "Depth Discontinuities by Pixel-to-Pixel Stereo"
 \cite{birchtom99}. This is done by finding the correspondence
 $I_{m\mathbf{q}}$ of the matching image from the mean intensity of a
 block of pixels $I_{b\mathbf{p}}$ in the base image with the formula
-$\mathbf{q} = \mathcal{e}_{bm}(\mathbf{p}, d)$ where
-$\mathcal{e}_{bm}(\mathbf{p}, d)$ represents the epipolar line for
+$\mathbf{q} = e_{bm}(\mathbf{p}, d)$ where
+$e_{bm}(\mathbf{p}, d)$ represents the epipolar line for
 $\mathbf{p}$ in $I_b$. The size of the area has influence on the
 robustness of the disparity map. Larger areas are more robust but fine
 structures get more blurred, because of the assumption of the same
