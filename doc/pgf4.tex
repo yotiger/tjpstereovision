@@ -1,0 +1,18 @@
+% Latex pgf picture
+% Shows 5 disparities: {1,1,1,0,1}
+% With bgcolors : {w,w,g,b,g}
+\begin{pgfpicture}
+\pgfrect[stroke]{\pgfxy(5,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(4,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(3,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(2,1)}{\pgfxy(1,1)}
+\pgfrect[stroke]{\pgfxy(1,1)}{\pgfxy(1,1)}
+
+\pgfputat{\pgfxy(0.5,1.5)}{\pgfbox[center,center]{$f =$}}
+
+\pgfputat{\pgfxy(1.5,1.5)}{\pgfbox[center,center]{1}}
+\pgfputat{\pgfxy(2.5,1.5)}{\pgfbox[center,center]{1}}
+\pgfputat{\pgfxy(3.5,1.5)}{\pgfbox[center,center]{1}}
+\pgfputat{\pgfxy(4.5,1.5)}{\pgfbox[center,center]{0}}
+\pgfputat{\pgfxy(5.5,1.5)}{\pgfbox[center,center]{1}}
+\end{pgfpicture}
