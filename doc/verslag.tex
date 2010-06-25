@@ -366,9 +366,31 @@ the less you want to label the pixels with different disparities.\\
 Every node is also connected to labeling terminals $f^a$ and $f^0$. These edges, such as $t^{\alpha}_{p}$, contain weights that 
 express the costs of a pixel having that label. For more information on energy functions and weight values see \cite{zabih2001}.
 
+\noindent\textbf{Cut}:\indent\\
+The relation between the labeling configuration and the cut is described in equation \ref{eq: fC}. In plain english 
+this means that a point $p$ is labeled $\alpha$ if the edge between $p$ and $\alpha$ is cut. The cost of that cut is equal 
+to the sum of the weights of the cut edges. The idea of graph cut is to find the minimum cost cut. When a cut C cuts the 
+edge between a point and a terminal and the edge between the adjacent connected point and the other terminal it also has to
+cut the edge between the points, this will make the cost of the cut high if it cuts similar pixels.
+
+\noindent\textbf{Iterations}:\indent\\
+The implementation of graph cut in both \cite{zabih2001} and \cite{kolmogorov2003} is iterative. This means that each iteration 
+pixels are labeled with one of two labels: the label they already had ($f^0$) or a new label ($f^{\alpha}$). The implementation 
+will compare every disparity label in a given disparity range.\\\\
+
+Suppose we have picture $\mathcal{P}$ as seen in \ref{fig:pictureP} with as ground truth (real disparity) configuration $f$.
+Graph Cut will construct a graph as shown in figure \ref{fig:gc_end_result} and calculate the minimum cost cut in the graph.
+As we can see in the result after the first iteration in figure \ref{fig:gcstep1} it has compared the new label $f^{\alpha} = 1$ with 
+the initial label and determined that configuration $f$ in figure \label{fig:gcstep1} has the lowest costs. Figure \label{fig:gcstep2} shows 
+the next iteration which shows a correct configuration.\\\\
+
+%TODOSANDER
+For a more in depth description of the graph cut algorithm, see
+\cite{zabih2001}. For more details on the implementation in OpenCV,
+see \ref{kolmogorov2003}.
+
 \begin{figure}[h!bt]
 \centering
-\caption{Picture $\mathcal{P}$}
 \begin{minipage}[h]{.4\linewidth}
 \include{pgf1}
 \end{minipage}
@@ -376,6 +398,8 @@ express the costs of a pixel having that label. For more information on energy f
 \begin{minipage}[h]{.4\linewidth}
 \include{pgf2}
 \end{minipage}
+\caption{Picture $\mathcal{P}$}
+\label{fig:pictureP}
 \end{figure}
 \begin{equation}
  f_{p}^{C} = \left\{
@@ -385,6 +409,7 @@ express the costs of a pixel having that label. For more information on energy f
   \end{array}
 \right.
  \forall p \epsilon \mathcal{P}
+\label{eq: fC}
 \end{equation}
 
 \begin{figure}[h!bt]
@@ -398,19 +423,16 @@ express the costs of a pixel having that label. For more information on energy f
 \centering
 \include{pgf3}
 \include{pgf4}
-\caption{Graph-Cut step 1 with $f^\alpha = 1$}
+\caption{Graph-Cut step 1 with $f^\alpha = 1$}                                             
+\label{fig:gcstep1}
 \end{figure}
 \begin{figure}[h!bt]
 \centering
 \include{pgf5}
 \include{pgf2}
 \caption{Graph-Cut step 2 with $f^\alpha = 2$}
+\label{fig:gcstep2}
 \end{figure}
-
-%TODOSANDER
-For a more in depth description of the graph cut algorithm, see
-\cite{zabih2001}. For more details on the implementation in OpenCV,
-see \ref{kolmogorov2003}.
 
 \subsubsection{Semi Global Block Matching Theory}
 Semi global block matching is built on the idea that you use mean data
@@ -875,8 +897,6 @@ This was our original planning from which we did not have to deviate greatly.
       \item Generating depth map
     \end{itemize}
   \end{itemize}
-
-
 
 \section{NOTES MARTIJN (DELETE LATER)}
 
