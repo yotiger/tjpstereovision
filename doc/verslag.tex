@@ -65,11 +65,11 @@ depthmap supplies additional information for path planning.
 Cameras have some parameters that defines how real-world objects are
 projected on the image plane. The four most important parameters define
 the \emph{focal length} in $x$ and $y$ direction and the \emph{possible 
-displacement} of the imagecenter away from the optic axis. The focal length
+displacement} of the image center away from the optic axis. The focal length
 ideally is the distance between the \emph{center of projection} ($C1$ and
 $C2$ in \ref{fig:rectepipole}) and the \emph{image plane} ($R1$ and $R2$).
 These parameters are summarized in the following (homogeneous) matrix,
-which is called the \emph{intern camera matrix}:
+which is called the \emph{internal camera matrix}:
 \[ \left( \begin{array}{ccc}
 f_x & 0   & c_x \\
 0   & f_y & c_y \\
@@ -77,25 +77,25 @@ f_x & 0   & c_x \\
 \end{array} \right)\] 
 If we choose a real-world coordinate system different from the coordinate
 system centered at the cameras center of projection, we have another matrix,
-called the \emph{extern camera matrix}, which defines the transformation from
+called the \emph{external camera matrix}, which defines the transformation from
 this coordinate system to the camera coordinate system. This second matrix
 contains rotations in the $x$, $y$ and $z$ direction, and a translation.
 This alternative coordinate system becomes handy later on, when we will
 choose our own coordinate system based on the chessboard.
-Together, the intern and extern camera matrix form the basis for our
+Together, the internal and external camera matrix form the basis for our
 mathematical model of the camera, and could be used to calculate the 3D
-real-world coordinates out of the 2D image coordinates, and vica versa.
+real-world coordinates out of the 2D image coordinates, and vice versa.
 Calibration tries to determine the parameters in these matrices.
 
-When working with camera's and in particular cheap webcams, often there
+When working with cameras and in particular cheap webcams, often there
 will be some distortion of the grabbed images due to imperfections of
 the camera. The two most important distortions are radial distortion,
 caused by a lens being more spherical than the ideal parabolic lens would
 be, and tangential distortion, caused by the lens not being fully parallel
-to the image plane. Fortunately, both distortions can be resonable undone
+to the image plane. Fortunately, both distortions can be reasonable undone
 with a simple mathematical reprojection. The distortions can be
 characterized by a Taylor series of two terms for the lens shape and a
-reprojection for the skew image plane. For brevety, we omit the mathematical
+reprojection for the skew image plane. For brevity, we omit the mathematical
 formulas and refer the interested reader to the OpenCV book
 \cite{LearningOpenCV}.
 
@@ -243,10 +243,10 @@ The algorithms we are using are namely:
 \item Semi Global Block Matching
 \end{itemize}
 
-These algorithms have to deal with the some problems in their
+These algorithms have to deal with some problems in their
 calculations. The main task of dense stereo algorithms is to find the
-corresponding pixels in the match image starting from pixels in the
-base image. While doing this the algorithms have to keep track of
+corresponding pixels in the search image starting from pixels in the
+source image. While doing this the algorithms have to keep track of
 occluded pixels, which are pixels that are found in one of the two images but
 not in the other. 
 
@@ -288,7 +288,7 @@ Because the OpenCV library that we have chosen has the basic
 implementation of a \emph{Graph Cut} algorithm from
 Kolmogorov\cite{kolmogorov2003}, we will start with that specific
 algorithm. It is not the best algorithm for this task but because of
-his general usability and it's high profile it is a good algorithm to start
+its general usability and its high profile it is a good algorithm to start
 with. Furthermore we will test the implementations of the
 standard \emph{Block Matching} algorithm, which is faster but not that
 precise. Also we will test a quite new implementation of the
@@ -370,8 +370,8 @@ express the costs of a pixel having that label. For more information on energy f
 The relation between the labeling configuration and the cut is described in equation \ref{eq: fC}. In plain english 
 this means that a point $p$ is labeled $\alpha$ if the edge between $p$ and $\alpha$ is cut. The cost of that cut is equal 
 to the sum of the weights of the cut edges. The idea of graph cut is to find the minimum cost cut. When a cut C cuts the 
-edge between a point and a terminal and the edge between the adjacent connected point and the other terminal it also has to
-cut the edge between the points, this will make the cost of the cut high if it cuts similar pixels.
+edge between a point and a terminal and the edge between the adjacent connected point and the other terminal, it also has to
+cut the edge between the points. This will make the cost of the cut high if it cuts similar pixels.
 
 \noindent\textbf{Iterations}:\indent\\
 The implementation of graph cut in both \cite{zabih2001} and \cite{kolmogorov2003} is iterative. This means that each iteration 
@@ -602,10 +602,10 @@ on, which enforces one on one pixel mappings.
 \label{opencv} OpenCV is a library of programming functions for real
 time computer vision. By using this library we can constrain our tasks
 mostly to integrating various parts of OpenCV and expanding it where
-necessary. If we would not use OpenCV, we would had to implement a lot
-of basic computer vision functions, so there would probably be not
-enough time to achieve our goal. OpenCV is fast library written in C/C++,
-and has python binding as well, which we will use to decrease the risk
+necessary. If we would not use OpenCV, we would have to implement a lot
+of basic computer vision functions, so there probably wouldn't be
+enough time to achieve our goal. OpenCV is a fast library written in C/C++,
+and has Python bindings as well, which we will use to decrease the risk
 of programming errors.
 
 \subsection{Calibration}
@@ -621,7 +621,7 @@ actually lie in the real world (3D coordinates).
 the intersection points of a chessboard. These points on the
 chessboard are recognized by the stereo cameras and a list of
 chessboard piececorners coordinates is returned, see Figure
-\ref{chessboardcorners}. The corners are being found by by first
+\ref{chessboardcorners}. The corners are found by first
 thresholding the image and then trying to locate a grid of black-white
 transitions of the given count. This gives an approximation on pixel level,
 which is not very accurate.
@@ -750,7 +750,7 @@ the image into different depths.
 The Semi Global Block Matching algorithm is quite new in the OpenCV
 library. It was implemented in version 2.1 which is the current
 version at the time this article is written. It is more precise and
-almost as fast as the standard block matching algorithm but the python
+almost as fast as the standard block matching algorithm but the Python
 binding is not yet completed and integrated into OpenCV. Because of
 this we wrote this part in C++. Just as the standard Block Matching
 the algorithm still needs to be tuned right to return the optimal
@@ -853,7 +853,7 @@ of the original image. One could also replace the black background pixels with
 an alternative image to place front objects in alternative locations. We got a
 live background-removal program running which places people standing in front of
 the camera at a beach or at the Efteling. Besides some noise and occlusion
-problems, the images seems pretty good. See Figure \ref{remove-bg} for the
+problems, the images seem pretty good. See Figure \ref{remove-bg} for the
 result.
 
 \begin{figure}[h!bt]
